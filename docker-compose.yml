@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: agrisense
+      POSTGRES_PASSWORD: agrisense
+      POSTGRES_DB: agrisense
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agrisense"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://agrisense:agrisense@postgres:5432/agrisense
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: change-me-in-production
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      WEATHER_API_URL: https://api.open-meteo.com/v1
+      # Optional external integrations — DB fallbacks apply when unset.
+      MANDI_API_URL: ""
+      MANDI_API_KEY: ""
+      ASSISTANT_API_URL: ""
+      ASSISTANT_API_KEY: ""
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api/v1
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
