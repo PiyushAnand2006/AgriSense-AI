@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Cucumber illustration">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf8ec"/><stop offset="1" stop-color="#e8f0dd"/></linearGradient></defs>
+  <rect width="320" height="240" rx="16" fill="url(#bg)"/>
+  <circle cx="52" cy="50" r="20" fill="#fdca4d" opacity="0.75"/>
+  <ellipse cx="160" cy="208" rx="130" ry="18" fill="#d2cabd" opacity="0.45"/>
+  <g stroke="#847564" stroke-width="5" stroke-linecap="round">
+    <path d="M110 200V56"/><path d="M210 200V56"/>
+  </g>
+  <g stroke="#4c7c46" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M110 84c30 8 60 8 100-4" />
+    <path d="M110 130c30 8 60 8 100-4"/>
+    <path d="M110 176c30 6 58 6 100-4"/>
+  </g>
+  <g>
+    <rect x="132" y="96" width="14" height="44" rx="7" fill="#3f8a4f" transform="rotate(10 139 118)"/>
+    <rect x="176" y="140" width="13" height="40" rx="6.5" fill="#35754286" transform="rotate(-8 182 160)"/>
+    <rect x="176" y="140" width="13" height="40" rx="6.5" fill="#357542" transform="rotate(-8 182 160)"/>
+    <rect x="128" y="180" width="14" height="40" rx="7" fill="#3f8a4f" transform="rotate(6 135 200)"/>
+    <g stroke="#2c5f38" stroke-width="2" opacity="0.6" stroke-linecap="round">
+      <path d="M137 102v6"/><path d="M181 146v6"/><path d="M140 186v6"/>
+    </g>
+  </g>
+  <g fill="#fdca4d"><circle cx="152" cy="88" r="5"/><circle cx="196" cy="132" r="4.4"/><circle cx="148" cy="174" r="5"/></g>
+  <g fill="#5f9e55">
+    <ellipse cx="92" cy="150" rx="11" ry="6" transform="rotate(-20 92 150)"/>
+    <ellipse cx="236" cy="120" rx="11" ry="6" transform="rotate(20 236 120)"/>
+  </g>
+</svg>

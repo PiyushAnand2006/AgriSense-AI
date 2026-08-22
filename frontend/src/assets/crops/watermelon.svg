@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Watermelon illustration">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf8ec"/><stop offset="1" stop-color="#e8f0dd"/></linearGradient></defs>
+  <rect width="320" height="240" rx="16" fill="url(#bg)"/>
+  <circle cx="268" cy="48" r="22" fill="#fdca4d" opacity="0.85"/>
+  <ellipse cx="160" cy="206" rx="130" ry="20" fill="#d2cabd" opacity="0.45"/>
+  <g stroke="#4c7c46" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M60 200c20-40 60-60 100-58"/>
+    <path d="M100 176c-6-18 2-34 14-42"/>
+  </g>
+  <g fill="#5f9e55">
+    <ellipse cx="96" cy="152" rx="12" ry="6" transform="rotate(-24 96 152)"/>
+    <ellipse cx="126" cy="140" rx="12" ry="6" transform="rotate(14 126 140)"/>
+    <ellipse cx="78" cy="186" rx="11" ry="6" transform="rotate(10 78 186)"/>
+  </g>
+  <g>
+    <ellipse cx="196" cy="164" rx="62" ry="46" fill="#2f7d4f"/>
+    <path d="M150 130c-8 22-6 48 8 66" stroke="#1b4f34" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M196 118c-10 30-10 62 0 92" stroke="#1b4f34" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M242 130c8 22 6 48-8 66" stroke="#1b4f34" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M158 122c22 10 52 12 76 2" stroke="#57b57d" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.8"/>
+    <path d="M160 208c24-8 50-10 72-2" stroke="#57b57d" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.8"/>
+  </g>
+  <path d="M258 132c8-6 16-6 22-2" stroke="#4c7c46" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

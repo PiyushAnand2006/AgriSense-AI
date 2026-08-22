@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="AgriSense AI logo">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#339961"/>
+      <stop offset="1" stop-color="#17412c"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#lg)"/>
+  <path d="M24 36c-7 0-12-5-12-12 10 0 12 2 12 12Z" fill="#bce5cb"/>
+  <path d="M24 36c7 0 12-5 12-12-10 0-12 2-12 12Z" fill="#8dd1a8"/>
+  <path d="M24 38V22" stroke="#f1faf3" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M24 22c0-5 3-9 8-10-1 6-4 9-8 10Z" fill="#fcb424"/>
+  <circle cx="33" cy="14" r="2.4" fill="#fcb424"/>
+  <circle cx="36" cy="9" r="1.4" fill="#fdca4d"/>
+</svg>

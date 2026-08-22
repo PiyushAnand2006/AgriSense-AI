@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Crop health scan illustration">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0faf2"/><stop offset="1" stop-color="#dcefe0"/></linearGradient></defs>
+  <rect width="320" height="240" rx="16" fill="url(#bg)"/>
+  <path d="M150 70c-40 0-64 26-64 62 42 0 60-16 64-62Z" fill="#247b4c"/>
+  <path d="M170 70c40 0 64 26 64 62-42 0-60-16-64-62Z" fill="#339961"/>
+  <path d="M160 78v112" stroke="#17412c" stroke-width="5" stroke-linecap="round"/>
+  <g fill="none" stroke="#f5930b" stroke-width="6" stroke-linecap="round">
+    <path d="M84 44v-8a8 8 0 0 1 8-8h10"/><path d="M236 44v-8a8 8 0 0 0-8-8h-10"/>
+    <path d="M84 176v8a8 8 0 0 0 8 8h10"/><path d="M236 176v8a8 8 0 0 1-8 8h-10"/>
+  </g>
+  <g stroke="#f5930b" stroke-width="3" stroke-dasharray="10 8" opacity="0.8">
+    <path d="M96 160c20-8 34-24 40-44"/><path d="M224 160c-20-8-34-24-40-44"/>
+  </g>
+  <g>
+    <circle cx="238" cy="150" r="26" fill="#ffffff" opacity="0.95"/>
+    <circle cx="238" cy="150" r="26" fill="none" stroke="#247b4c" stroke-width="4"/>
+    <path d="M238 136v28M224 150h28" stroke="#247b4c" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <circle cx="86" cy="92" r="4" fill="#fcb424"/><circle cx="232" cy="84" r="5" fill="#fdca4d" opacity="0.8"/>
+</svg>

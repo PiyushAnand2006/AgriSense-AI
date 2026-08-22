@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Illustration of sunlit farm fields with data overlays">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef9ee"/>
+      <stop offset="1" stop-color="#e8f4e5"/>
+    </linearGradient>
+    <linearGradient id="field1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#57b57d"/>
+      <stop offset="1" stop-color="#247b4c"/>
+    </linearGradient>
+    <linearGradient id="field2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8dd1a8"/>
+      <stop offset="1" stop-color="#339961"/>
+    </linearGradient>
+    <linearGradient id="field3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fcb424"/>
+      <stop offset="1" stop-color="#d96f06"/>
+    </linearGradient>
+  </defs>
+
+  <!-- sky -->
+  <rect width="640" height="480" rx="24" fill="url(#sky)"/>
+  <!-- sun -->
+  <circle cx="520" cy="96" r="42" fill="#fdca4d" opacity="0.9"/>
+  <circle cx="520" cy="96" r="58" fill="#fcb424" opacity="0.18"/>
+  <!-- clouds -->
+  <g fill="#ffffff" opacity="0.85">
+    <ellipse cx="150" cy="80" rx="46" ry="16"/>
+    <ellipse cx="185" cy="70" rx="30" ry="13"/>
+    <ellipse cx="380" cy="55" rx="34" ry="12"/>
+  </g>
+
+  <!-- distant hills -->
+  <path d="M0 300c90-46 170-40 250-12s150 34 390-28v44H0Z" fill="#bce5cb" opacity="0.7"/>
+
+  <!-- terraced fields -->
+  <path d="M0 330c120-30 200-24 320 6s200 26 320-10v154H0Z" fill="url(#field2)"/>
+  <path d="M0 380c140-34 240-20 340 10s180 20 300-14v104H0Z" fill="url(#field1)"/>
+  <path d="M0 440c160-24 260-10 360 12s170 14 280-12v40H0Z" fill="url(#field3)" opacity="0.92"/>
+
+  <!-- field rows on nearest terrace -->
+  <g stroke="#1b4f34" stroke-width="5" stroke-linecap="round" opacity="0.5">
+    <path d="M40 452c60-10 120-12 180-6"/>
+    <path d="M300 456c60-8 120-8 180-2"/>
+  </g>
+
+  <!-- data overlay: floating chart card -->
+  <g>
+    <rect x="52" y="120" width="200" height="120" rx="14" fill="#ffffff" opacity="0.96"/>
+    <text x="70" y="146" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#17412c">Wheat · Azadpur</text>
+    <polyline points="70,212 96,196 122,204 148,180 174,188 232,158" fill="none" stroke="#339961" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="232,158 232,158" fill="none" stroke="#fcb424" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10"/>
+    <circle cx="232" cy="158" r="5" fill="#fcb424"/>
+    <text x="70" y="230" font-family="Arial, sans-serif" font-size="11" fill="#6c5f53">forecast ₹2,680/q</text>
+  </g>
+
+  <!-- data overlay: health chip -->
+  <g>
+    <rect x="330" y="150" width="150" height="44" rx="22" fill="#ffffff" opacity="0.96"/>
+    <circle cx="354" cy="172" r="12" fill="#339961"/>
+    <path d="M348 172l4 4 8-8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="374" y="177" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#17412c">Health 92%</text>
+  </g>
+
+  <!-- leaf scan marker -->
+  <g transform="translate(410 250)">
+    <path d="M60 8C30 8 12 28 12 52c26 0 44-6 48-44Z" fill="#247b4c"/>
+    <path d="M60 8C90 8 108 28 108 52c-26 0-44-6-48-44Z" fill="#339961"/>
+    <rect x="0" y="0" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>
+    <rect x="102" y="0" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>
+    <rect x="0" y="72" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>
+    <rect x="102" y="72" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>
+  </g>
+</svg>

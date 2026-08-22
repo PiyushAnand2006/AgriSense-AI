@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --chart-1: #247b4c;
+    --chart-2: #fcb424;
+    --chart-3: #57b57d;
+    --chart-grid: rgba(100, 116, 139, 0.18);
+    --chart-text: #64748b;
+  }
+
+  .dark {
+    --chart-1: #57b57d;
+    --chart-2: #fdca4d;
+    --chart-3: #8dd1a8;
+    --chart-grid: rgba(148, 163, 184, 0.16);
+    --chart-text: #94a3b8;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-soil-50 font-sans text-soil-950 antialiased dark:bg-soil-950 dark:text-soil-100;
+  }
+
+  ::selection {
+    @apply bg-primary-200 text-primary-900;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-soil-950;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl2 border border-soil-200/80 bg-white shadow-card dark:border-soil-800 dark:bg-soil-900;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800;
+  }
+
+  .btn-secondary {
+    @apply btn border border-soil-300 bg-white text-soil-800 hover:bg-soil-100 dark:border-soil-700 dark:bg-soil-900 dark:text-soil-100 dark:hover:bg-soil-800;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent-500 text-white hover:bg-accent-600;
+  }
+
+  .btn-ghost {
+    @apply btn text-soil-700 hover:bg-soil-100 dark:text-soil-200 dark:hover:bg-soil-800;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-soil-300 bg-white px-3.5 py-2.5 text-sm text-soil-900 placeholder-soil-400 transition-colors focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/30 dark:border-soil-700 dark:bg-soil-900 dark:text-soil-100;
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-soil-700 dark:text-soil-200;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .section-title {
+    @apply font-display text-2xl font-bold tracking-tight text-soil-950 dark:text-white sm:text-3xl;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-soil-600 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-soil-300 dark:hover:bg-soil-800 dark:hover:text-primary-300;
+  }
+
+  .nav-link-active {
+    @apply bg-primary-600 text-white hover:bg-primary-600 hover:text-white dark:bg-primary-600 dark:text-white dark:hover:bg-primary-600;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+/* Recharts theming */
+.recharts-cartesian-grid line {
+  stroke: var(--chart-grid);
+}
+
+.recharts-text {
+  fill: var(--chart-text);
+  font-size: 11px;
+}
+
+/* Markdown content (sanitized before render) */
+.md-content p {
+  @apply mb-3 leading-relaxed;
+}
+
+.md-content p:last-child {
+  @apply mb-0;
+}
+
+.md-content ul {
+  @apply mb-3 list-disc pl-5;
+}
+
+.md-content strong {
+  @apply font-semibold;
+}
+
+.md-content em {
+  @apply italic text-soil-500 dark:text-soil-400;
+}

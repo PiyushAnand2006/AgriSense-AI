@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Sell or hold balance illustration">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0faf2"/><stop offset="1" stop-color="#e2eef7"/></linearGradient></defs>
+  <rect width="320" height="240" rx="16" fill="url(#bg)"/>
+  <g stroke="#4c7c46" stroke-width="5" stroke-linecap="round">
+    <path d="M160 52v112"/><path d="M132 52h56"/>
+  </g>
+  <path d="M160 44l-10 16h20Z" fill="#f5930b"/>
+  <g stroke="#6c5f53" stroke-width="4" stroke-linecap="round">
+    <path d="M96 62l64 8"/><path d="M224 62l-64 8"/>
+  </g>
+  <g>
+    <path d="M96 70c-18 0-32 14-32 32h64c0-18-14-32-32-32Z" fill="#339961"/>
+    <circle cx="96" cy="102" r="6" fill="#17412c"/>
+  </g>
+  <g>
+    <path d="M224 70c-18 0-32 14-32 32h64c0-18-14-32-32-32Z" fill="#fcb424"/>
+    <circle cx="224" cy="102" r="6" fill="#923d0e"/>
+  </g>
+  <g>
+    <circle cx="208" cy="102" r="14" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
+    <circle cx="240" cy="102" r="10" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
+  </g>
+  <g>
+    <circle cx="96" cy="102" r="14" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
+    <path d="M92 102l3 3 6-6" stroke="#339961" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  </g>
+  <rect x="120" y="164" width="80" height="18" rx="9" fill="#6c5f53"/>
+  <path d="M104 196h112" stroke="#6c5f53" stroke-width="6" stroke-linecap="round"/>
+  <text x="112" y="228" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#17412c">SELL</text>
+  <text x="196" y="228" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#923d0e">HOLD</text>
+</svg>

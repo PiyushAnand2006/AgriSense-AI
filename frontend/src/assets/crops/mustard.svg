@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Mustard illustration">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf8ec"/><stop offset="1" stop-color="#e8f0dd"/></linearGradient></defs>
+  <rect width="320" height="240" rx="16" fill="url(#bg)"/>
+  <circle cx="268" cy="48" r="22" fill="#fdca4d" opacity="0.85"/>
+  <ellipse cx="160" cy="208" rx="130" ry="20" fill="#d2cabd" opacity="0.45"/>
+  <g stroke="#4c7c46" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M160 204V70"/><path d="M124 204V96"/><path d="M196 204V88"/>
+    <path d="M160 150c-10-16-8-34 0-46"/>
+  </g>
+  <g fill="#5f9e55">
+    <ellipse cx="142" cy="150" rx="10" ry="5" transform="rotate(-24 142 150)"/>
+    <ellipse cx="178" cy="160" rx="10" ry="5" transform="rotate(22 178 160)"/>
+    <ellipse cx="126" cy="176" rx="9" ry="5" transform="rotate(-14 126 176)"/>
+    <ellipse cx="196" cy="178" rx="9" ry="5" transform="rotate(16 196 178)"/>
+  </g>
+  <g fill="#fcb424">
+    <circle cx="160" cy="62" r="8"/><circle cx="176" cy="70" r="7"/><circle cx="144" cy="72" r="7"/>
+    <circle cx="166" cy="84" r="6"/><circle cx="152" cy="88" r="6"/>
+    <circle cx="124" cy="88" r="7"/><circle cx="136" cy="96" r="6"/><circle cx="112" cy="98" r="5"/>
+    <circle cx="196" cy="80" r="7"/><circle cx="208" cy="88" r="6"/><circle cx="186" cy="92" r="5"/>
+  </g>
+  <g fill="#ffe9b3">
+    <circle cx="160" cy="62" r="3"/><circle cx="124" cy="88" r="3"/><circle cx="196" cy="80" r="3"/>
+  </g>
+</svg>

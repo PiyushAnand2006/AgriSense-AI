@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Chickpea illustration">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf8ec"/><stop offset="1" stop-color="#e8f0dd"/></linearGradient></defs>
+  <rect width="320" height="240" rx="16" fill="url(#bg)"/>
+  <circle cx="52" cy="52" r="20" fill="#fdca4d" opacity="0.7"/>
+  <ellipse cx="160" cy="206" rx="120" ry="20" fill="#d2cabd" opacity="0.45"/>
+  <g stroke="#4c7c46" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M160 204V120"/><path d="M120 204c-4-30 4-56 16-72"/><path d="M200 204c4-30-4-56-16-72"/>
+  </g>
+  <g fill="#5f9e55">
+    <ellipse cx="160" cy="128" rx="9" ry="5" transform="rotate(-20 160 128)"/>
+    <ellipse cx="172" cy="142" rx="9" ry="5" transform="rotate(25 172 142)"/>
+    <ellipse cx="146" cy="146" rx="9" ry="5" transform="rotate(-30 146 146)"/>
+    <ellipse cx="126" cy="160" rx="8" ry="5" transform="rotate(-15 126 160)"/>
+    <ellipse cx="196" cy="162" rx="8" ry="5" transform="rotate(18 196 162)"/>
+    <ellipse cx="160" cy="166" rx="9" ry="5" transform="rotate(8 160 166)"/>
+  </g>
+  <g fill="#ffffff" stroke="#e5e1d9" stroke-width="1">
+    <circle cx="150" cy="112" r="5"/><circle cx="172" cy="118" r="4"/><circle cx="138" cy="130" r="4"/>
+  </g>
+  <g fill="#9d8f7b">
+    <ellipse cx="186" cy="150" rx="6" ry="10" transform="rotate(24 186 150)"/>
+    <ellipse cx="136" cy="168" rx="6" ry="10" transform="rotate(-18 136 168)"/>
+    <ellipse cx="160" cy="184" rx="6" ry="10" transform="rotate(6 160 184)"/>
+  </g>
+  <g fill="#c9a15e">
+    <circle cx="214" cy="188" r="9"/><circle cx="228" cy="176" r="7"/>
+  </g>
+</svg>
