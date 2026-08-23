@@ -4,6 +4,23 @@ A REST API-driven agricultural information and decision-support platform for Ind
 
 The backend owns the database, integrates external APIs (weather, mandi prices, optional assistant), normalizes their responses and serves a single standardized REST contract to the frontend. The frontend never calls third-party services directly.
 
+---
+
+### 🌐 Live Deployment Links
+
+| Service | Live URL | Description |
+|---|---|---|
+| **🌾 Web Application** | **[https://agri-sense-ai-nine.vercel.app](https://agri-sense-ai-nine.vercel.app)** | Production frontend hosted on **Vercel** |
+| **⚡ Backend REST API** | **[https://agrisense-api-0p24.onrender.com/api/v1](https://agrisense-api-0p24.onrender.com/api/v1)** | FastAPI backend on **Render** + **Supabase PostgreSQL** |
+| **📖 Interactive API Docs** | **[https://agrisense-api-0p24.onrender.com/docs](https://agrisense-api-0p24.onrender.com/docs)** | OpenAPI / Swagger UI testing suite |
+| **🩺 Health Check** | **[https://agrisense-api-0p24.onrender.com/health](https://agrisense-api-0p24.onrender.com/health)** | Live service health & uptime monitor |
+
+> **Demo Farmer Account:**  
+> 📧 **Email**: `demo@agrisense.ai`  
+> 🔑 **Password**: `Demo@1234`
+
+---
+
 ![Landing page](docs/screenshots/landing.png)
 
 ---
