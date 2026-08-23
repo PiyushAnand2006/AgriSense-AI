@@ -1,4 +1,4 @@
-"""Disease information schemas (API-based, no ML)."""
+"""Disease information schemas."""
 
 from app.schemas.common import CamelModel
 

@@ -64,7 +64,7 @@ export interface FarmerCropInput {
   location?: string;
 }
 
-// --- Disease / pest / treatment information (educational, no ML) ---------------
+// --- Disease / pest / treatment information (educational) ----------------------
 
 export interface KnowledgeBase {
   symptoms: string[];

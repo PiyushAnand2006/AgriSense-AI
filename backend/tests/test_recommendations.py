@@ -1,4 +1,4 @@
-"""Sell/Hold rule-based decision engine tests (no ML — transparent rules)."""
+"""Sell/Hold rule-based decision engine tests (transparent rules)."""
 
 API = "/api/v1/recommendations/sell-hold"
 

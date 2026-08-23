@@ -156,7 +156,7 @@ Keys always include the query parameters (lat, lon, days).
 
 ---
 
-## Bonus: Sell/Hold decision pipeline (rules, not ML)
+## Bonus: Sell/Hold decision pipeline (transparent rules)
 
 ```
 POST /api/v1/recommendations/sell-hold
@@ -178,5 +178,5 @@ POST /api/v1/recommendations/sell-hold
                   disclaimer: "Decision-support rule — not financial advice."}
 ```
 
-Every step is transparent and documented — there is no model confidence or
-opaque score.
+Every step is transparent and documented — a clear reason string explains
+the decision rather than an opaque score.

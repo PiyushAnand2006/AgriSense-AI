@@ -91,6 +91,6 @@ def test_dashboard_summary(client, auth):
     assert body["marketTrend"]["direction"] in ("UP", "DOWN", "FLAT")
     assert body["weather"] is not None
     assert isinstance(body["warnings"], list)
-    # No ML prediction fields on the dashboard.
+    # No prediction-style fields on the dashboard.
     assert "predictedPrice" not in body
     assert "status" not in body

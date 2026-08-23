@@ -63,7 +63,7 @@ def test_market_trend_is_rule_computed(client):
     )
     assert body["changePct"] == expected_pct
     assert "not a price forecast" in body["note"]
-    # No ML prediction fields anywhere.
+    # No prediction-style fields anywhere.
     assert "confidence" not in body
     assert "status" not in body
 

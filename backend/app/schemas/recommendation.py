@@ -1,8 +1,7 @@
 """Sell / hold decision-support schemas (transparent rule-based engine).
 
-This is a decision-support rule, not financial advice. There is no ML
-prediction involved — the engine compares recorded market trends against
-storage costs using documented thresholds.
+This is a decision-support rule, not financial advice. The engine compares
+recorded market trends against storage costs using documented thresholds.
 """
 
 from pydantic import Field

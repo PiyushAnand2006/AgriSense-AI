@@ -1,4 +1,4 @@
-"""Pest information schemas (API-based, no ML)."""
+"""Pest information schemas."""
 
 from app.schemas.common import CamelModel
 

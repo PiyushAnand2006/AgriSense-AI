@@ -1,4 +1,4 @@
-"""Fertilizer information + guidance endpoints (rule-based, no ML).
+"""Fertilizer information + guidance endpoints (rule-based).
 
 - GET  /fertilizers                 fertilizer category catalog
 - GET  /fertilizers/{id}            catalog detail

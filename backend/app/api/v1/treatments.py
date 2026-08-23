@@ -1,4 +1,4 @@
-"""Treatment information endpoints (educational guidance — no ML, no dosages).
+"""Treatment information endpoints (educational guidance, no dosages).
 
 - GET /treatments                        all treatments
 - GET /treatments/{treatment_id}         treatment detail

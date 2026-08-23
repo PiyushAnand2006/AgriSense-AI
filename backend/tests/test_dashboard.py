@@ -24,7 +24,7 @@ def test_dashboard_aggregates_all_sources(client, auth):
 
     # Aggregation metadata
     assert isinstance(body["warnings"], list)
-    # No ML prediction fields on the dashboard.
+    # No prediction-style fields on the dashboard.
     assert "forecastConfidence" not in body
     assert "status" not in body
 

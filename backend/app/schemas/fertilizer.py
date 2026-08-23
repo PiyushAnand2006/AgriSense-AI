@@ -1,4 +1,4 @@
-"""Fertilizer information + guidance schemas (rule-based, no ML)."""
+"""Fertilizer information + guidance schemas (rule-based)."""
 
 from pydantic import Field
 

@@ -1,4 +1,4 @@
-/** Pest information API — educational content service (no ML). */
+/** Pest information API — educational content service. */
 import { apiClient } from "./apiClient";
 import type { PestInfo, Treatment } from "@/types/api";
 

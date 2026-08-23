@@ -1,8 +1,8 @@
 """Farmer-logged crop health records and sell/hold recommendation records.
 
 Health records are observations the farmer logs (disease/pest seen in the
-field, optionally with a photo). No server-side inference happens — the
-earlier ML analysis tables were removed with the ML layer.
+field, optionally with a photo). No server-side inference happens — records
+are plain observations.
 """
 
 import uuid

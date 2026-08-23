@@ -4,25 +4,26 @@ A REST API-driven agricultural information and decision-support platform for Ind
 
 The backend owns the database, integrates external APIs (weather, mandi prices, optional assistant), normalizes their responses and serves a single standardized REST contract to the frontend. The frontend never calls third-party services directly.
 
-> **Architecture note.** This project was migrated from an earlier ML-oriented architecture to a pure REST API / API-integration architecture. There is no machine-learning dependency in the running application. The preserved provider design for a possible future ML phase is documented in [docs/future-ml.md](docs/future-ml.md).
+![Landing page](docs/screenshots/landing.png)
 
 ---
 
 ## Table of Contents
 
 1. [What the Platform Does](#what-the-platform-does)
-2. [System Architecture](#system-architecture)
-3. [Technology Stack](#technology-stack)
-4. [Repository Structure](#repository-structure)
-5. [How to Run](#how-to-run)
-6. [Environment Variables](#environment-variables)
-7. [API Overview](#api-overview)
-8. [Key Workflows](#key-workflows)
-9. [Database Schema](#database-schema)
-10. [External Integrations](#external-integrations)
-11. [Cross-Cutting Concerns](#cross-cutting-concerns)
-12. [Testing](#testing)
-13. [Disclaimers](#disclaimers)
+2. [Interface Tour](#interface-tour)
+3. [System Architecture](#system-architecture)
+4. [Technology Stack](#technology-stack)
+5. [Repository Structure](#repository-structure)
+6. [How to Run](#how-to-run)
+7. [Environment Variables](#environment-variables)
+8. [API Overview](#api-overview)
+9. [Key Workflows](#key-workflows)
+10. [Database Schema](#database-schema)
+11. [External Integrations](#external-integrations)
+12. [Cross-Cutting Concerns](#cross-cutting-concerns)
+13. [Testing](#testing)
+14. [Disclaimers](#disclaimers)
 
 ---
 
@@ -50,46 +51,35 @@ Everything the user sees is served by the backend's versioned REST API. Agricult
 
 ---
 
+## Interface Tour
+
+The screenshots below are taken from the running application with the seeded demo account. Sign in with the demo credentials (or register a new farmer profile) to reach the application shell; every page after that is served through the versioned REST API with a JWT bearer session.
+
+| Sign in | Create account |
+|---|---|
+| ![Sign in page](docs/screenshots/login.png) | ![Create account page](docs/screenshots/register.png) |
+
+| Farmer dashboard | My crops |
+|---|---|
+| ![Farmer dashboard](docs/screenshots/dashboard.png) | ![My crops page](docs/screenshots/crops.png) |
+
+| Market price board | Weather forecast |
+|---|---|
+| ![Market price board](docs/screenshots/market.png) | ![Weather forecast page](docs/screenshots/weather.png) |
+
+| Crop health knowledge | Sell or hold decision |
+|---|---|
+| ![Crop health page](docs/screenshots/health.png) | ![Sell or hold page](docs/screenshots/recommendation.png) |
+
+| Marketplace | Farmer assistant |
+|---|---|
+| ![Marketplace page](docs/screenshots/marketplace.png) | ![Farmer assistant page](docs/screenshots/assistant.png) |
+
+---
+
 ## System Architecture
 
-```mermaid
-flowchart TB
-    subgraph Client["Client Layer"]
-        FE["Frontend<br/>React + TypeScript + Vite<br/>(pages, typed services, state, i18n)"]
-    end
-
-    subgraph Backend["FastAPI Backend (central API orchestration layer)"]
-        MW["Middleware Stack<br/>CORS, X-Request-ID correlation,<br/>structured logging, rate limiting"]
-        ERR["Centralized Error Handlers<br/>{error: {code, message, requestId}}"]
-        API["Routers /api/v1/*<br/>validation + delegation only"]
-        SVC["Service Layer<br/>crop, market, weather, recommendation,<br/>dashboard, knowledge, assistant"]
-        CACHE["Cache Interface<br/>Redis or in-memory TTL"]
-        EXT["External Clients<br/>shared httpx wrapper:<br/>timeout, retry, logging"]
-    end
-
-    subgraph Data["Data Layer"]
-        PG[("PostgreSQL<br/>(SQLite for local dev)")]
-        REDIS[("Redis<br/>(optional)")]
-    end
-
-    subgraph ThirdParty["Third-Party Services"]
-        WX["Open-Meteo<br/>Weather API"]
-        MANDI["Mandi Price Feed<br/>(AGMARKNET-style, optional)"]
-        ASSIST["Assistant API<br/>(optional)"]
-    end
-
-    FE -- "REST + JSON<br/>JWT Bearer" --> MW
-    MW --> API
-    API --> ERR
-    API --> SVC
-    SVC --> PG
-    SVC <--> CACHE
-    CACHE <--> REDIS
-    SVC --> EXT
-    EXT -- "https" --> WX
-    EXT -- "https" --> MANDI
-    EXT -- "https" --> ASSIST
-```
+The frontend speaks only to the backend's versioned REST API (`/api/v1`, JSON over HTTP with JWT bearer authentication). The backend owns the database, the cache and every third-party integration; external payloads are validated and normalized once, inside the backend, so the frontend only ever sees stable internal shapes.
 
 Layer responsibilities:
 
@@ -148,14 +138,13 @@ AgriSense-AI/
 |   |   |-- models/            SQLAlchemy ORM models
 |   |   |-- schemas/           Pydantic request/response schemas
 |   |   `-- services/          business logic
-|   |-- future/ml/             preserved ML provider design (not in runtime)
 |   `-- tests/                 pytest suite, external APIs always mocked
 |-- docs/
 |   |-- api.md                 endpoint reference
 |   |-- api-pipeline.md        six documented end-to-end pipelines
 |   |-- architecture.md        architecture deep-dive
 |   |-- external-apis.md       integration and normalization details
-|   `-- future-ml.md           future ML extension plan
+|   `-- screenshots/           interface screenshots used in this README
 |-- docker-compose.yml         postgres + redis + backend + frontend
 |-- .env.example               environment variable template
 `-- README.md
@@ -279,96 +268,23 @@ All endpoints are versioned under `/api/v1`. The full reference with request and
 
 ### Request lifecycle with correlation
 
-Every request carries an `X-Request-ID` end to end. If the client provides one it is echoed back; otherwise a new identifier is generated. The identifier appears in every log line and in every error envelope.
-
-```mermaid
-sequenceDiagram
-    participant FE as Frontend
-    participant MW as Middleware
-    participant RT as Router
-    participant SV as Service
-    participant DB as Database
-    participant EXT as External API
-
-    FE->>MW: GET /api/v1/market/prices (X-Request-ID optional)
-    MW->>MW: reuse or generate request ID
-    MW->>RT: validated request
-    RT->>SV: delegate to market service
-    SV->>DB: query normalized price rows
-    SV->>EXT: optional mandi feed lookup
-    EXT-->>SV: provider payload
-    SV->>SV: validate + normalize + compute trends
-    SV-->>RT: standardized data
-    RT-->>MW: response
-    MW-->>FE: 200 JSON + X-Request-ID header
-```
+Every request carries an `X-Request-ID` end to end. If the client provides one it is echoed back; otherwise a new identifier is generated. A typical market lookup travels frontend to middleware (correlation, rate limiting, logging) to the router (validation only), into the market service, which reads normalized price rows from the database, optionally consults the external mandi feed, computes trends and returns standardized data. The identifier appears in every log line and in every error envelope.
 
 ### External API pipeline (weather)
 
-```mermaid
-flowchart LR
-    A["GET /weather/current?lat&lon"] --> B{"Cache hit?<br/>(30 min TTL)"}
-    B -- yes --> C["Cached response<br/>source: weather-api"]
-    B -- no --> D["WeatherClient<br/>(shared httpx wrapper)"]
-    D --> E["Open-Meteo API<br/>(timeout, retry x2)"]
-    E --> F["Validate payload"]
-    F --> G["Normalize to WeatherDay<br/>(condition from weather codes)"]
-    G --> H["Store in cache"]
-    H --> I["Response<br/>source: weather-api"]
-    E -- "failure after retries" --> J["Local seasonal fallback<br/>source: weather-local"]
-    J --> K["Dashboard warning:<br/>'Weather service unavailable'"]
-```
+A weather request first checks the cache (30-minute TTL). On a miss it goes through the shared httpx wrapper to the Open-Meteo API with an 8-second timeout and two retries; the returned payload is validated, normalized into internal weather-day objects (conditions mapped from provider weather codes) and stored in the cache. If the provider fails after retries, the service falls back to deterministic local seasonal data and the dashboard surfaces a `warnings[]` entry, so the response always discloses its `source` (`weather-api` or `weather-local`).
 
 ### Authentication flow
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant FE as Frontend
-    participant API as FastAPI
-
-    U->>FE: submits registration form
-    FE->>API: POST /auth/register {name, email, password}
-    API->>API: bcrypt hash, create user + profile
-    API-->>FE: 201 {token, user} (rate limited: 30/min/IP)
-    FE->>FE: persist token (localStorage)
-    FE->>API: any protected call, Authorization: Bearer
-    API->>API: decode JWT, load user, attach user_id to logs
-    API-->>FE: response or 401 with WWW-Authenticate
-```
+Registration submits `{name, email, password}`; the backend hashes the password with bcrypt, creates the user with a farmer profile and returns a JWT (HS256) plus the user object. The frontend persists the token and sends it as an `Authorization: Bearer` header on every protected call; the backend decodes it, loads the user and attaches the user ID to request logs. Login failures return a 401 with `WWW-Authenticate`; both endpoints sit behind the stricter auth rate limit (30 requests per minute per IP).
 
 ### Dashboard aggregation with graceful degradation
 
-```mermaid
-flowchart TB
-    A["GET /api/v1/dashboard"] --> S["dashboard_service"]
-    S --> C["Crop + health records<br/>(database)"]
-    S --> M["Market price + trend<br/>(database)"]
-    S --> W["Weather<br/>(external API + cache)"]
-    S --> N["Notifications<br/>(database)"]
-    W -- "provider failure" --> WF["fallback: local data + warning"]
-    C --> R["Aggregated DashboardSummary"]
-    M --> R
-    W --> R
-    WF --> R
-    N --> R
-    R --> O["Single JSON response<br/>{crop, marketTrend, weather,<br/>notifications, warnings[]}"]
-```
+`GET /dashboard` fans out in one request to crop and health records (database), market price and trend (database), weather (external API with cache) and notifications (database). Each section is collected independently; if one degrades (most commonly the weather provider), that section falls back to local data and a human-readable entry is appended to `warnings[]` instead of failing the whole response. The frontend receives a single aggregated summary it can render in one pass.
 
-### Sell or hold decision engine (transparent rules, no ML)
+### Sell or hold decision engine (transparent rules)
 
-```mermaid
-flowchart TB
-    A["POST /recommendations/sell-hold<br/>{cropId, quantity, storageDays, riskTolerance}"] --> B["Load current modal price<br/>+ 90-day recorded history"]
-    B --> C["Compute 7/14/30-day trends"]
-    C --> D["Project price over storage window<br/>(trend extrapolation, capped ±20%)"]
-    D --> E["expected_return =<br/>projected - current - storage_cost"]
-    E --> F{"expected_return% ><br/>risk threshold?<br/>LOW: 2%, MEDIUM: 0.5%, HIGH: 0%"}
-    F -- yes --> H["HOLD"]
-    F -- no --> S["SELL"]
-    H --> G["reason + risk label +<br/>'not financial advice' disclaimer"]
-    S --> G
-```
+`POST /recommendations/sell-hold` loads the current modal price and the 90-day recorded history, computes 7/14/30-day trends and projects the price over the requested storage window (trend extrapolation, capped at ±20%). The expected return is the projection minus the current price minus the storage cost; if it clears the caller's risk threshold (LOW 2%, MEDIUM 0.5%, HIGH 0%), the engine answers HOLD, otherwise SELL. Every response carries the reason, a risk label and an explicit "not financial advice" disclaimer.
 
 Additional pipelines (database read, cached external flow, error flow) are documented in [docs/api-pipeline.md](docs/api-pipeline.md).
 
@@ -376,86 +292,19 @@ Additional pipelines (database read, cached external flow, error flow) are docum
 
 ## Database Schema
 
-```mermaid
-erDiagram
-    USERS ||--o| FARMER_PROFILES : has
-    USERS ||--o{ FARMER_CROPS : plants
-    USERS ||--o{ HEALTH_RECORDS : logs
-    USERS ||--o{ SELL_HOLD_RECOMMENDATIONS : receives
-    USERS ||--o{ NOTIFICATIONS : gets
-    USERS ||--o{ ASSISTANT_CONVERSATIONS : owns
-    ASSISTANT_CONVERSATIONS ||--o{ ASSISTANT_MESSAGES : contains
-    CROPS ||--o{ FARMER_CROPS : planted_as
-    CROPS ||--o{ HEALTH_RECORDS : subject_of
-    CROPS ||--o{ MARKET_PRICES : priced_as
-    MARKETS ||--o{ MARKET_PRICES : lists
-    CROPS ||--o{ CROP_LISTINGS : listed_as
+Core entities and their relationships:
 
-    USERS {
-        string id PK
-        string email UK
-        string name
-        string hashed_password
-    }
-    FARMER_PROFILES {
-        string id PK
-        string user_id FK
-        string village
-        string district
-        string state
-        float farm_size_acres
-    }
-    CROPS {
-        string id PK
-        string name
-        string season
-        int growing_period_days
-        string sowing_window
-        string harvest_window
-    }
-    MARKETS {
-        string id PK
-        string name
-        string city
-        string state
-    }
-    MARKET_PRICES {
-        int id PK
-        string crop_id FK
-        string market_id FK
-        date price_date
-        float min_price
-        float max_price
-        float modal_price
-    }
-    HEALTH_RECORDS {
-        string id PK
-        string user_id FK
-        string crop_id FK
-        string record_type
-        string name
-        string severity
-        string image_url
-    }
-    SELL_HOLD_RECOMMENDATIONS {
-        string id PK
-        string user_id FK
-        string crop_id FK
-        string recommendation
-        string trend
-        float storage_cost
-        float expected_additional_return
-        string reason
-    }
-    CROP_LISTINGS {
-        string id PK
-        string farmer_id FK
-        string crop_id FK
-        float quantity
-        float asking_price
-        string status
-    }
-```
+| Entity | Purpose | Relationships |
+|---|---|---|
+| `users` | Accounts with bcrypt-hashed credentials | Owns the profile, plantings, health records, recommendations, notifications and assistant conversations |
+| `farmer_profiles` | Village, district, state, farm size in acres | One-to-one with `users` |
+| `crops` | Catalog: season, growing period, sowing and harvest windows | Planted as `farmer_crops`, subject of `health_records`, priced in `market_prices`, listed in `crop_listings` |
+| `markets` | Mandi reference data (8 markets) | Lists `market_prices` |
+| `market_prices` | Daily min / max / modal price per quintal | Belongs to a `crop` and a `market` |
+| `health_records` | Field observations: disease or pest, severity, optional photo | Belongs to a `user` and a `crop` |
+| `sell_hold_recommendations` | Saved decisions with recommendation, trend, storage cost, expected return and reason | Belongs to a `user` and a `crop` |
+| `crop_listings` | Marketplace listings: quantity, asking price, status | Belongs to a farmer (`user`) and a `crop` |
+| `assistant_conversations` / `assistant_messages` | Chat history with the assistant | Owned by a `user` |
 
 Seeding (`backend/app/db/seed.py`) is idempotent and date-deterministic: reference crops and markets, 120 days of price history per crop and market pair, a demo account with plantings and records, and sample marketplace listings.
 
@@ -495,15 +344,9 @@ Every price object on the wire carries `minPrice`, `maxPrice`, `modalPrice`, `un
 
 The backend suite covers authentication, crop CRUD and isolation, seasons, disease/pest/treatment/fertilizer information services, normalized market data and trends, rule-engine decisions (including internal math consistency), dashboard aggregation, weather with a mocked provider, external-API failure and normalization edge cases, request correlation, rate limiting and OpenAPI completeness. Automated tests never call real third-party services; clients expose reset seams for mock injection.
 
-Raw ML datasets used by the earlier architecture are excluded from version control (see `.gitignore`); the future-extension plan in [docs/future-ml.md](docs/future-ml.md) documents how they would be reintroduced alongside trained models.
-
 ---
 
 ## Disclaimers
 
 - Agricultural content (diseases, pests, treatments, fertilizer guidance) is educational information, labelled as such in both the API and the UI. Always consult local agricultural officers before acting on it.
 - The sell or hold engine is a transparent decision-support rule based on recorded mandi trends. It is not financial advice.
-
-## Future ML Extension
-
-The service layer is structured so a trained-model provider could be added later without changing the REST contract. The preserved provider design lives in `backend/future/ml/` and the extension plan is documented in [docs/future-ml.md](docs/future-ml.md).

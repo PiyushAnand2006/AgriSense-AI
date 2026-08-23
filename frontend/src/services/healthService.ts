@@ -1,9 +1,8 @@
 /**
  * Health API — image uploads + farmer-logged health records.
  *
- * The earlier "analyze" endpoints (mock ML predictions) are gone. Farmers
- * browse disease/pest information via diseaseService/pestService and log
- * their own field observations here.
+ * Farmers browse disease/pest information via diseaseService/pestService
+ * and log their own field observations here.
  */
 import { apiClient } from "./apiClient";
 import type { HealthRecord, HealthRecordInput, RecordType } from "@/types/api";

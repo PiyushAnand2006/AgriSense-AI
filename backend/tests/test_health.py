@@ -1,7 +1,7 @@
 """Upload security + farmer-logged health record tests.
 
-The old ML analyze endpoints are gone: farmers now browse disease/pest
-information and log their own field observations (optionally with a photo).
+Farmers browse disease/pest information and log their own field
+observations (optionally with a photo).
 """
 
 from tests.conftest import PNG_BYTES
@@ -53,7 +53,7 @@ def test_upload_and_log_record_flow(client, auth):
     assert body["recordType"] == "DISEASE"
     assert body["severity"] == "MODERATE"
     assert body["imageUrl"] == image_url
-    # No ML fields on the record — it is an observation, not a prediction.
+    # The record is a plain observation, not a prediction.
     assert "confidence" not in body
     assert "status" not in body
 

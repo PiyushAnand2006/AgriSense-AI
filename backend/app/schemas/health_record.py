@@ -1,8 +1,8 @@
 """Farmer-logged crop health records.
 
-These replace the earlier ML "analysis" records: farmers observe a disease
-or pest in the field, optionally attach a photo (via /uploads), and log the
-observation. No inference of any kind happens server-side.
+Farmers observe a disease or pest in the field, optionally attach a photo
+(via /uploads), and log the observation. No inference of any kind happens
+server-side.
 """
 
 from datetime import datetime

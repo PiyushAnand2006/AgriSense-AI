@@ -180,5 +180,4 @@ Partial failures of non-critical sources appear in `warnings[]`.
 | POST | `/uploads` (multipart `file`) | Bearer | JPEG/PNG/WebP only (magic-byte sniffed), ≤8 MB → `{url}` |
 
 Files are stored with generated UUID filenames and served from `/uploads`.
-There is **no ML inference attached to uploads** — images reference
-farmer-logged health records.
+Uploaded images reference farmer-logged health records.

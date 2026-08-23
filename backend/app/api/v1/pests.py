@@ -1,4 +1,4 @@
-"""Pest information endpoints (information service — no ML).
+"""Pest information endpoints (information service).
 
 - GET /pests                       all known pests
 - GET /pests/{pest_id}             pest detail

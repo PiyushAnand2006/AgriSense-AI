@@ -1,4 +1,4 @@
-"""Sell / Hold decision-support engine — transparent rules, no ML.
+"""Sell / Hold decision-support engine — transparent rules.
 
 The backend exclusively owns this logic; the frontend never computes a
 recommendation. Inputs:

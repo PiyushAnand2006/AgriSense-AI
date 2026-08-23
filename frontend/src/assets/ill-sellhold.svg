@@ -2,27 +2,21 @@
   <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0faf2"/><stop offset="1" stop-color="#e2eef7"/></linearGradient></defs>
   <rect width="320" height="240" rx="16" fill="url(#bg)"/>
   <g stroke="#4c7c46" stroke-width="5" stroke-linecap="round">
-    <path d="M160 52v112"/><path d="M132 52h56"/>
+    <path d="M160 52v112"/><path d="M96 52h128"/>
   </g>
   <path d="M160 44l-10 16h20Z" fill="#f5930b"/>
-  <g stroke="#6c5f53" stroke-width="4" stroke-linecap="round">
-    <path d="M96 62l64 8"/><path d="M224 62l-64 8"/>
+  <g stroke="#6c5f53" stroke-width="3" stroke-linecap="round">
+    <path d="M96 56v22"/><path d="M224 56v22"/>
   </g>
   <g>
-    <path d="M96 70c-18 0-32 14-32 32h64c0-18-14-32-32-32Z" fill="#339961"/>
-    <circle cx="96" cy="102" r="6" fill="#17412c"/>
+    <circle cx="96" cy="82" r="14" fill="#ffffff" stroke="#339961" stroke-width="3"/>
+    <path d="M92 82l3 3 6-6" stroke="#339961" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M64 88c0 20 14 32 32 32s32-12 32-32Z" fill="#339961"/>
   </g>
   <g>
-    <path d="M224 70c-18 0-32 14-32 32h64c0-18-14-32-32-32Z" fill="#fcb424"/>
-    <circle cx="224" cy="102" r="6" fill="#923d0e"/>
-  </g>
-  <g>
-    <circle cx="208" cy="102" r="14" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
-    <circle cx="240" cy="102" r="10" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
-  </g>
-  <g>
-    <circle cx="96" cy="102" r="14" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
-    <path d="M92 102l3 3 6-6" stroke="#339961" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <circle cx="212" cy="78" r="11" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
+    <circle cx="234" cy="82" r="9" fill="#ffffff" stroke="#6c5f53" stroke-width="3"/>
+    <path d="M192 88c0 20 14 32 32 32s32-12 32-32Z" fill="#fcb424"/>
   </g>
   <rect x="120" y="164" width="80" height="18" rx="9" fill="#6c5f53"/>
   <path d="M104 196h112" stroke="#6c5f53" stroke-width="6" stroke-linecap="round"/>

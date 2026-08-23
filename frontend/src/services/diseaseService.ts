@@ -1,4 +1,4 @@
-/** Disease information API — educational content service (no ML). */
+/** Disease information API — educational content service. */
 import { apiClient } from "./apiClient";
 import type { DiseaseInfo, Treatment } from "@/types/api";
 

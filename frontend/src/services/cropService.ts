@@ -34,7 +34,7 @@ export const cropService = {
     return apiClient.delete<void>(`/crops/${id}`);
   },
 
-  // Crop-scoped information sub-resources (information services, no ML).
+  // Crop-scoped information sub-resources (information services).
   diseases(cropId: string) {
     return apiClient.get<DiseaseInfo[]>(`/crops/${cropId}/diseases`);
   },

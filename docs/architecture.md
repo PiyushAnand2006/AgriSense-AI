@@ -54,16 +54,13 @@ SQLite (dev)   Assistant API (optional)
    inconsistent field names; `app/external/mandi_client.py` maps every variant
    to the internal `{min, max, modal} price, unit, source` shape. No frontend
    component is coupled to a provider format.
-3. **No ML dependency.** No model files, no inference code, no mock
-   predictions. The earlier provider design is preserved under
-   `backend/future/ml/` (see future-ml.md).
-4. **Graceful degradation for non-critical sources.** If the weather API fails,
+3. **Graceful degradation for non-critical sources.** If the weather API fails,
    the dashboard returns local seasonal data and adds a warning — it never
    fails entirely.
-5. **Centralized errors.** `AppError` subclasses map to a stable envelope:
+4. **Centralized errors.** `AppError` subclasses map to a stable envelope:
    `{"error": {"code": "EXTERNAL_SERVICE_UNAVAILABLE", "message": ..., "requestId": ...}}`.
    Stack traces never reach clients.
-6. **Correlation.** Every request gets an `X-Request-ID` (echoed if provided)
+5. **Correlation.** Every request gets an `X-Request-ID` (echoed if provided)
    returned in the response header and included in every log line.
 
 ## Data flow example — market prices

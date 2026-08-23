@@ -23,11 +23,19 @@
   <!-- sun -->
   <circle cx="520" cy="96" r="42" fill="#fdca4d" opacity="0.9"/>
   <circle cx="520" cy="96" r="58" fill="#fcb424" opacity="0.18"/>
+  <g stroke="#f5930b" stroke-width="5" stroke-linecap="round" opacity="0.75">
+    <path d="M520 32v-16"/><path d="M475 51l-12-12"/><path d="M565 51l12-12"/>
+  </g>
   <!-- clouds -->
   <g fill="#ffffff" opacity="0.85">
     <ellipse cx="150" cy="80" rx="46" ry="16"/>
     <ellipse cx="185" cy="70" rx="30" ry="13"/>
     <ellipse cx="380" cy="55" rx="34" ry="12"/>
+  </g>
+  <!-- birds -->
+  <g stroke="#4c7c46" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5">
+    <path d="M240 98c7-7 13-7 18 0c5-7 11-7 18 0"/>
+    <path d="M310 126c6-6 11-6 15 0c4-6 9-6 15 0"/>
   </g>
 
   <!-- distant hills -->
@@ -42,6 +50,11 @@
   <g stroke="#1b4f34" stroke-width="5" stroke-linecap="round" opacity="0.5">
     <path d="M40 452c60-10 120-12 180-6"/>
     <path d="M300 456c60-8 120-8 180-2"/>
+  </g>
+  <!-- mustard blossoms on the front terrace -->
+  <g fill="#fdca4d" opacity="0.9">
+    <circle cx="120" cy="452" r="5"/><circle cx="168" cy="447" r="4"/>
+    <circle cx="420" cy="454" r="5"/><circle cx="470" cy="458" r="4"/>
   </g>
 
   <!-- data overlay: floating chart card -->
@@ -64,8 +77,8 @@
 
   <!-- leaf scan marker -->
   <g transform="translate(410 250)">
-    <path d="M60 8C30 8 12 28 12 52c26 0 44-6 48-44Z" fill="#247b4c"/>
-    <path d="M60 8C90 8 108 28 108 52c-26 0-44-6-48-44Z" fill="#339961"/>
+    <path d="M60 82C30 82 12 62 12 38c26 0 44 6 48 44Z" fill="#247b4c"/>
+    <path d="M60 82C90 82 108 62 108 38c-26 0-44 6-48 44Z" fill="#339961"/>
     <rect x="0" y="0" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>
     <rect x="102" y="0" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>
     <rect x="0" y="72" width="18" height="18" rx="4" fill="none" stroke="#f5930b" stroke-width="4"/>

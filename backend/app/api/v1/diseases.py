@@ -1,4 +1,4 @@
-"""Disease information endpoints (information service — no ML).
+"""Disease information endpoints (information service).
 
 - GET /diseases                       all known diseases
 - GET /diseases/{disease_id}          disease detail (symptoms, management, prevention)

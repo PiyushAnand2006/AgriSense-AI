@@ -99,7 +99,7 @@ def test_openapi_documentation_complete(client):
         "/api/v1/assistant", "/api/v1/notifications", "/api/v1/auth",
     ):
         assert any(p.startswith(prefix) for p in paths), f"missing {prefix} in OpenAPI"
-    # The removed ML endpoints must not exist anymore.
+    # Unknown endpoint families must not exist.
     for gone in ("/api/v1/health/analyze", "/api/v1/pests/analyze",
                  "/api/v1/quality/analyze", "/api/v1/market/forecast/{crop_id}"):
         assert gone not in paths

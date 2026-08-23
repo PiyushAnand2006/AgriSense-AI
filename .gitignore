@@ -30,6 +30,7 @@ coverage/
 .mimosa/
 
 # Raw ML datasets (future-extension inputs; not part of the API application)
+datasets/
 ML/data/raw/
 
 # Logs & OS

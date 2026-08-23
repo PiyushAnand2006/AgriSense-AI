@@ -89,12 +89,23 @@ export default function LandingPage() {
           <h2 className="section-title text-center">{t("landing.problemTitle")}</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {[
-              { icon: HealthIcon, title: t("landing.problem1Title"), body: t("landing.problem1Body"), art: illHealth },
+              {
+                icon: HealthIcon,
+                title: t("landing.problem1Title"),
+                body: t("landing.problem1Body"),
+                art: illHealth,
+                artClass: "-scale-y-100",
+              },
               { icon: MarketIcon, title: t("landing.problem2Title"), body: t("landing.problem2Body"), art: illMarket },
               { icon: ScalesIcon, title: t("landing.problem3Title"), body: t("landing.problem3Body"), art: illSellHold },
             ].map((item) => (
               <div key={item.title} className="card p-6">
-                <img src={item.art} alt="" className="mx-auto h-28" loading="lazy" />
+                <img
+                  src={item.art}
+                  alt=""
+                  className={`mx-auto h-28 ${item.artClass ?? ""}`}
+                  loading="lazy"
+                />
                 <h3 className="mt-4 font-display text-lg font-bold text-soil-950 dark:text-white">
                   {item.title}
                 </h3>

@@ -8,9 +8,7 @@ def test_system_status(client):
     assert body["status"] == "ok"
     assert body["features"]["marketplace"] is True
     assert body["features"]["diseaseInfo"] is True
-    # No ML flags exist anymore — the platform is API-integration driven.
-    assert "mlDiseaseDetection" not in body["features"]
-    assert "provider" not in body
+    assert "integrations" in body
 
 
 def test_register_login_me_flow(client):
