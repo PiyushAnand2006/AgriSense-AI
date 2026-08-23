@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Builds
+dist/
+build/
+*.egg-info/
+
+# Databases & uploads (local dev artifacts)
+*.db
+*.sqlite3
+backend/uploads/
+
+# Test & coverage
+.coverage
+htmlcov/
+coverage/
+.pytest_cache/
+
+# Tool state
+.mimosa/
+
+# Raw ML datasets (future-extension inputs; not part of the API application)
+ML/data/raw/
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
