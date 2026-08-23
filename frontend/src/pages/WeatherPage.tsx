@@ -21,20 +21,31 @@ const ALERT_STYLES: Record<WeatherAlert["severity"], string> = {
   CRITICAL: "border-red-300 bg-red-50 text-red-800 dark:border-red-700 dark:bg-red-900/30 dark:text-red-200",
 };
 
+const CITY_PRESETS = [
+  { name: "Varanasi", lat: "25.32", lon: "82.98" },
+  { name: "Bengaluru", lat: "12.97", lon: "77.59" },
+  { name: "Delhi", lat: "28.61", lon: "77.21" },
+  { name: "Nashik", lat: "19.99", lon: "73.79" },
+  { name: "Jaipur", lat: "26.91", lon: "75.79" },
+  { name: "Kolkata", lat: "22.57", lon: "88.36" },
+];
+
 export default function WeatherPage() {
   const { t } = useI18n();
   const [lat, setLat] = useState("");
   const [lon, setLon] = useState("");
 
+  const validLat = lat.trim() && !isNaN(Number(lat)) ? Number(lat) : undefined;
+  const validLon = lon.trim() && !isNaN(Number(lon)) ? Number(lon) : undefined;
+
+  const activeLat = validLat !== undefined && validLon !== undefined ? validLat : undefined;
+  const activeLon = validLat !== undefined && validLon !== undefined ? validLon : undefined;
+
   const fetchWeather = useCallback(
-    () =>
-      weatherService.current(
-        lat.trim() ? Number(lat) : undefined,
-        lon.trim() ? Number(lon) : undefined,
-      ),
-    [lat, lon],
+    () => weatherService.current(activeLat, activeLon),
+    [activeLat, activeLon],
   );
-  const { data, loading, error, stale, fetchedAt, refetch } = useApiQuery(fetchWeather, [lat, lon]);
+  const { data, loading, error, stale, fetchedAt, refetch } = useApiQuery(fetchWeather, [activeLat, activeLon]);
 
   return (
     <div className="space-y-6">
@@ -55,9 +66,9 @@ export default function WeatherPage() {
 
       {stale && <OfflineBanner fetchedAt={fetchedAt} />}
 
-      {/* Location input — coordinates go to the backend, which owns the provider call */}
+      {/* Location input & Quick City Presets */}
       <div className="card flex flex-wrap items-end gap-3 p-4">
-        <div className="w-32">
+        <div className="w-28">
           <label htmlFor="weather-lat" className="label">
             {t("weather.location")} — lat
           </label>
@@ -71,7 +82,7 @@ export default function WeatherPage() {
             onChange={(event) => setLat(event.target.value)}
           />
         </div>
-        <div className="w-32">
+        <div className="w-28">
           <label htmlFor="weather-lon" className="label">
             lon
           </label>
@@ -85,8 +96,30 @@ export default function WeatherPage() {
             onChange={(event) => setLon(event.target.value)}
           />
         </div>
+
+        <div className="flex flex-wrap items-center gap-1.5 pb-1">
+          <span className="text-xs font-medium text-soil-500 dark:text-soil-400">Quick Presets:</span>
+          {CITY_PRESETS.map((city) => (
+            <button
+              key={city.name}
+              type="button"
+              onClick={() => {
+                setLat(city.lat);
+                setLon(city.lon);
+              }}
+              className={`chip transition-colors ${
+                lat === city.lat && lon === city.lon
+                  ? "bg-primary-600 text-white"
+                  : "bg-soil-100 text-soil-700 hover:bg-soil-200 dark:bg-soil-800 dark:text-soil-300 dark:hover:bg-soil-700"
+              }`}
+            >
+              {city.name}
+            </button>
+          ))}
+        </div>
+
         {data && (
-          <p className="ml-auto text-sm text-soil-500 dark:text-soil-400">📍 {data.location}</p>
+          <p className="ml-auto text-sm font-medium text-soil-600 dark:text-soil-300">📍 {data.location}</p>
         )}
       </div>
 
