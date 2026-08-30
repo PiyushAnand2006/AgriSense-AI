@@ -11,6 +11,7 @@ import HealthPage from "@/pages/HealthPage";
 import FertilizerPage from "@/pages/FertilizerPage";
 import MarketPage from "@/pages/MarketPage";
 import RecommendationPage from "@/pages/RecommendationPage";
+import CropRecommendationPage from "@/pages/CropRecommendationPage";
 import WeatherPage from "@/pages/WeatherPage";
 import MarketplacePage from "@/pages/MarketplacePage";
 import AssistantPage from "@/pages/AssistantPage";
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/health" element={<HealthPage />} />
         <Route path="/fertilizer" element={<FertilizerPage />} />
         <Route path="/market" element={<MarketPage />} />
+        <Route path="/crop-recommendation" element={<CropRecommendationPage />} />
         <Route path="/recommendation" element={<RecommendationPage />} />
         <Route path="/weather" element={<WeatherPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />

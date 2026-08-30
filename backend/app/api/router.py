@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from app.api.v1 import (
     assistant,
     auth,
+    crop_recommendation,
     crops,
     dashboard,
     diseases,
@@ -34,6 +35,7 @@ api_router.include_router(fertilizers.router)
 api_router.include_router(fertilizers.guidance_router)
 api_router.include_router(market.router)
 api_router.include_router(recommendations.router)
+api_router.include_router(crop_recommendation.router)
 api_router.include_router(weather.router)
 api_router.include_router(listings.router)
 api_router.include_router(assistant.router)

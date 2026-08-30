@@ -424,3 +424,59 @@ export interface SystemStatus {
   };
   features: Record<string, boolean>;
 }
+
+// --- ML Crop Recommendation --------------------------------------------------
+
+export interface CropRecommendationInput {
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  temperature: number;
+  humidity: number;
+  ph: number;
+  rainfall: number;
+}
+
+export interface CropAlternative {
+  crop: string;
+  cropLabel: string;
+  probability: number;
+}
+
+export interface AgronomicGuide {
+  season: string;
+  waterRequirement: string;
+  soilType: string;
+  growthDurationDays: string;
+  fertilizerTip: string;
+  advisoryNote: string;
+  icon: string;
+}
+
+export interface CropRecommendationResult {
+  recommendedCrop: string;
+  cropLabel: string;
+  confidence: number;
+  alternatives: CropAlternative[];
+  agronomicGuide: AgronomicGuide;
+  modelName: string;
+  modelAccuracy: number;
+  inputParameters: Record<string, number>;
+}
+
+export interface ModelInfo {
+  modelName: string;
+  modelType: string;
+  testAccuracy: number;
+  crossValScore: number;
+  totalClasses: number;
+  classes: string[];
+  features: string[];
+}
+
+export interface PresetItem {
+  id: string;
+  title: string;
+  description: string;
+  values: CropRecommendationInput;
+}

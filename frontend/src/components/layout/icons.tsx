@@ -174,3 +174,19 @@ export const RupeeIcon = (p: IconProps) => (
     <path d="M7 12h4a4 4 0 0 1 0 8" />
   </svg>
 );
+
+export const SproutIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M7 20h10" />
+    <path d="M12 20v-8" />
+    <path d="M12 12c-2.5-4-7-4-7 0 0 3 3.5 4 7 0Z" />
+    <path d="M12 10c2.5-4 7-4 7 0 0 3-3.5 4-7 0Z" />
+  </svg>
+);
+
+export const SparklesIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="m12 3 1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3Z" />
+    <path d="M19 16l.9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z" />
+  </svg>
+);

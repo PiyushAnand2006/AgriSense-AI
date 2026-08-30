@@ -208,14 +208,40 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* ML Crop Recommendation Spotlight Banner */}
+      <div className="relative overflow-hidden rounded-2xl border border-primary-300/80 bg-gradient-to-r from-primary-600 via-primary-700 to-soil-800 p-6 text-white shadow-md dark:border-primary-600/40">
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+          <div className="max-w-xl space-y-1.5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider backdrop-blur">
+              ✨ {t("cropRec.badge")}
+            </span>
+            <h2 className="font-display text-xl font-black sm:text-2xl">
+              {t("cropRec.dashboardBannerTitle")}
+            </h2>
+            <p className="text-xs leading-relaxed text-primary-100 sm:text-sm">
+              {t("cropRec.dashboardBannerText")}
+            </p>
+          </div>
+          <Link
+            to="/crop-recommendation"
+            className="rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary-800 shadow-sm transition hover:bg-primary-50 hover:shadow-md dark:bg-soil-900 dark:text-primary-300 dark:hover:bg-soil-800"
+          >
+            🌾 {t("cropRec.getStarted")} →
+          </Link>
+        </div>
+      </div>
+
       {/* Quick actions */}
       <div className="card flex flex-wrap gap-3 p-5">
         <p className="w-full text-xs font-semibold uppercase tracking-wide text-soil-500 dark:text-soil-400">
           {t("dashboard.quickActions")}
         </p>
+        <Link to="/crop-recommendation" className="btn-primary">
+          🌾 {t("nav.cropRecommendation")}
+        </Link>
         <Link to="/health" className="btn-secondary">{t("dashboard.browseHealth")}</Link>
         <Link to="/market" className="btn-secondary">{t("dashboard.openMarket")}</Link>
-        <Link to="/recommendation" className="btn-primary">{t("dashboard.sellHold")}</Link>
+        <Link to="/recommendation" className="btn-secondary">{t("dashboard.sellHold")}</Link>
       </div>
     </div>
   );

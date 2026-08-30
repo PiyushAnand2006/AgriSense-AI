@@ -10,7 +10,6 @@ import { Drawer } from "@/components/ui/primitives";
 import { initials } from "@/utils/format";
 import {
   BellIcon,
-  ChatIcon,
   CropsIcon,
   DashboardIcon,
   FertilizerIcon,
@@ -21,12 +20,14 @@ import {
   MoonIcon,
   ScalesIcon,
   SettingsIcon,
+  SproutIcon,
   StoreIcon,
   SunIcon,
   UserIcon,
   WeatherIcon,
 } from "./icons";
 import logo from "@/assets/logo.svg";
+import FloatingAssistant from "@/components/assistant/FloatingAssistant";
 
 interface NavItem {
   to: string;
@@ -47,13 +48,13 @@ export default function AppLayout() {
   const navItems: NavItem[] = [
     { to: "/dashboard", label: t("nav.dashboard"), icon: DashboardIcon },
     { to: "/crops", label: t("nav.crops"), icon: CropsIcon },
+    { to: "/crop-recommendation", label: t("nav.cropRecommendation"), icon: SproutIcon },
     { to: "/health", label: t("nav.health"), icon: HealthIcon },
     { to: "/fertilizer", label: t("nav.fertilizer"), icon: FertilizerIcon },
     { to: "/market", label: t("nav.market"), icon: MarketIcon },
     { to: "/recommendation", label: t("nav.recommendation"), icon: ScalesIcon },
     { to: "/weather", label: t("nav.weather"), icon: WeatherIcon },
     { to: "/marketplace", label: t("nav.marketplace"), icon: StoreIcon },
-    { to: "/assistant", label: t("nav.assistant"), icon: ChatIcon },
   ];
 
   const handleLogout = async () => {
@@ -226,6 +227,9 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Draggable Floating AI Assistant */}
+      <FloatingAssistant />
     </div>
   );
 }

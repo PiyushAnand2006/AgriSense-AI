@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <!-- Soft gradients for realistic 3D bot feel matching the uploaded artwork -->
+    <linearGradient id="headGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+    <linearGradient id="visorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="earGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(60, 62)">
+    <!-- Antenna -->
+    <line x1="-31" y1="-22" x2="-31" y2="-45" stroke="#1E293B" stroke-width="4.5" stroke-linecap="round" />
+    <circle cx="-31" cy="-46" r="6.5" fill="url(#blueGrad)" stroke="#1E293B" stroke-width="3" />
+
+    <!-- Left Ear / Headphone cushion -->
+    <rect x="-47" y="-14" width="10" height="28" rx="5" fill="url(#earGrad)" stroke="#1E293B" stroke-width="3.5" />
+
+    <!-- Right Ear / Headphone cushion -->
+    <rect x="37" y="-14" width="10" height="28" rx="5" fill="url(#earGrad)" stroke="#1E293B" stroke-width="3.5" />
+
+    <!-- Main Outer Head / Helmet -->
+    <rect x="-38" y="-40" width="76" height="74" rx="27" fill="url(#headGrad)" stroke="#1E293B" stroke-width="4.5" />
+
+    <!-- Dark Forehead Visor Plaque -->
+    <path d="M -16 -39.5 L 16 -39.5 C 14 -27, -14 -27, -16 -39.5 Z" fill="url(#visorGrad)" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
+
+    <!-- Inner Face Screen -->
+    <rect x="-30.5" y="-24" width="61" height="51" rx="17" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+
+    <!-- Left Eyebrow -->
+    <path d="M -20 -11 Q -14 -14 -8 -11" fill="none" stroke="#1E293B" stroke-width="2.8" stroke-linecap="round" />
+
+    <!-- Right Eyebrow -->
+    <path d="M 8 -11 Q 14 -14 20 -11" fill="none" stroke="#1E293B" stroke-width="2.8" stroke-linecap="round" />
+
+    <!-- Left Big Cute Eye -->
+    <ellipse cx="-14" cy="0" rx="7.5" ry="9" fill="#0F172A" />
+    <circle cx="-16.5" cy="-3" r="3.2" fill="#FFFFFF" />
+
+    <!-- Right Big Cute Eye -->
+    <ellipse cx="14" cy="0" rx="7.5" ry="9" fill="#0F172A" />
+    <circle cx="11.5" cy="-3" r="3.2" fill="#FFFFFF" />
+
+    <!-- Cute Smiling Mouth -->
+    <path d="M -5.5 11 Q 0 18 5.5 11" fill="none" stroke="#0F172A" stroke-width="3.2" stroke-linecap="round" />
+
+    <!-- Headset Microphone Boom -->
+    <path d="M 40 4 C 41 24, 25 32, 14 32" fill="none" stroke="#1E293B" stroke-width="4" stroke-linecap="round" />
+    <!-- Microphone Blue Capsule -->
+    <rect x="6" y="27" width="13" height="10" rx="5" fill="url(#blueGrad)" stroke="#1E293B" stroke-width="2.8" />
+  </g>
+</svg>
