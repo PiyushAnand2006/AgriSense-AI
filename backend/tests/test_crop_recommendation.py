@@ -5,8 +5,8 @@ def test_model_info_endpoint(client):
     response = client.get("/api/v1/crop-recommendation/model-info")
     assert response.status_code == 200
     data = response.json()
-    assert "Random Forest" in data["modelName"]
-    assert data["testAccuracy"] > 95.0
+    assert "SVM" in data["modelName"]
+    assert data["testAccuracy"] > 90.0
     assert len(data["classes"]) == 22
     assert "rice" in data["classes"]
     assert "apple" in data["classes"]

@@ -1,8 +1,19 @@
 """Machine Learning Crop Recommendation Service.
 
-Loads the tuned Random Forest model trained on soil and environmental parameters
-(Nitrogen, Phosphorus, Potassium, Temperature, Humidity, pH, Rainfall) and provides
-prediction with multi-class probability scores and agronomic intelligence.
+Loads the tuned SVM (Support Vector Machine) model trained on soil and environmental
+parameters (Nitrogen, Phosphorus, Potassium, Temperature, Humidity, pH, Rainfall).
+
+Model selection rationale (evaluated on 50k real-world stress-test dataset):
+  SVM (Tuned)          89.20%  <-- ACTIVE  (best on unseen / noisy data)
+  Random Forest (Tuned) 88.89%
+  KNN                  88.37%
+  Decision Tree        81.17%
+
+SVM leads on noisy-sensor robustness (90.05%) and class-overlap separation (53.52%),
+which are the two hardest real-world scenarios for this 22-class problem.
+
+Note: The saved SVM model was trained without probability=True, so confidence scores
+are derived from the decision_function margin values via softmax normalisation.
 """
 
 from __future__ import annotations
@@ -357,11 +368,15 @@ class MLCropRecommender:
         self._load_model()
 
     def _locate_model_file(self) -> Path | None:
-        """Finds the tuned Random Forest model across common workspace paths."""
+        """Finds the tuned SVM model across package resources and workspace paths."""
+        # Find relative to this python file: backend/app/services/ml_crop_service.py -> backend/app/ml_models/
+        pkg_path = Path(__file__).resolve().parent.parent / "ml_models" / "SVM_tunned_model.pkl"
+        
         candidates = [
-            Path("datasets/crop recommendation/models/best_random_forest_tunned_model.pkl"),
-            Path("../datasets/crop recommendation/models/best_random_forest_tunned_model.pkl"),
-            Path(r"c:\Users\thaku\hackathon&projects\AgriSense AI\datasets\crop recommendation\models\best_random_forest_tunned_model.pkl"),
+            pkg_path,
+            Path("datasets/crop recommendation/models/SVM_tunned_model.pkl"),
+            Path("../datasets/crop recommendation/models/SVM_tunned_model.pkl"),
+            Path(r"c:\Users\thaku\hackathon&projects\AgriSense AI\datasets\crop recommendation\models\SVM_tunned_model.pkl"),
         ]
         for path in candidates:
             if path.is_file():
@@ -377,11 +392,16 @@ class MLCropRecommender:
                 self._model = joblib.load(str(path))
                 self._model_path = path
                 self._loaded = True
-                logger.info("Successfully loaded ML Crop Recommendation model from %s", path)
+                has_proba = hasattr(self._model, "predict_proba")
+                logger.info(
+                    "Loaded SVM Crop Recommendation model from %s (predict_proba=%s)",
+                    path,
+                    has_proba,
+                )
             else:
-                logger.warning("Tuned Random Forest model file not found. Fallback rule engine enabled.")
+                logger.warning("Tuned SVM model file not found. Fallback rule engine enabled.")
         except Exception as exc:
-            logger.error("Failed to load ML model: %s. Using heuristic fallback.", exc)
+            logger.error("Failed to load SVM model: %s. Using heuristic fallback.", exc)
             self._loaded = False
 
     def is_loaded(self) -> bool:
@@ -389,10 +409,13 @@ class MLCropRecommender:
 
     def get_model_info(self) -> ModelInfoResponse:
         return ModelInfoResponse(
-            modelName="Random Forest (Hyperparameter Tuned)",
-            modelType="Ensemble Random Forest Classifier (n_estimators=150, criterion='gini', bootstrap=True)",
-            testAccuracy=99.32,
-            crossValScore=99.54,
+            modelName="SVM — Support Vector Machine (Hyperparameter Tuned)",
+            modelType=(
+                "SVC with RBF kernel (C=10, gamma='scale') — best on 50k real-world stress-test: "
+                "89.20% overall | 90.05% noisy-sensor | 53.52% class-overlap"
+            ),
+            testAccuracy=97.95,          # original held-out test set accuracy
+            crossValScore=89.20,         # 50k real-world stress-test (unseen data)
             totalClasses=len(CROP_CLASSES),
             classes=CROP_CLASSES,
             features=["N", "P", "K", "temperature", "humidity", "ph", "rainfall"],
@@ -401,8 +424,21 @@ class MLCropRecommender:
     def get_presets(self) -> list[PresetItem]:
         return PRESETS
 
+    @staticmethod
+    def _softmax(scores: "np.ndarray") -> "np.ndarray":
+        """Numerically stable softmax to convert decision-function margins to probabilities."""
+        import numpy as np
+        e = np.exp(scores - scores.max())
+        return e / e.sum()
+
     def predict(self, req: CropRecommendationRequest) -> CropRecommendationResponse:
-        """Executes prediction on input features, returning ranked probabilities and guides."""
+        """Executes SVM prediction on input features.
+
+        Confidence strategy:
+          - If model has predict_proba (SVC trained with probability=True): use it directly.
+          - Otherwise: use decision_function margins converted via softmax as a confidence proxy.
+            Softmax of SVM margins is a well-known, calibration-friendly heuristic.
+        """
         recommended_crop = "rice"
         confidence = 95.0
         alternatives: list[CropAlternative] = []
@@ -422,15 +458,21 @@ class MLCropRecommender:
                     "rainfall": req.rainfall,
                 }])
 
-                # Multi-class probability prediction
-                probas = self._model.predict_proba(df_features)[0]
-                top_indices = np.argsort(probas)[::-1]
+                if hasattr(self._model, "predict_proba"):
+                    # SVC trained with probability=True — use calibrated probabilities
+                    probas = self._model.predict_proba(df_features)[0]
+                else:
+                    # SVC trained without probability=True — use decision_function margins
+                    # converted via softmax as a reliable confidence proxy
+                    decision_scores = self._model.decision_function(df_features)[0]
+                    probas = self._softmax(decision_scores)
 
+                top_indices = np.argsort(probas)[::-1]
                 best_idx = int(top_indices[0])
                 recommended_crop = CROP_CLASSES[best_idx]
                 confidence = float(probas[best_idx] * 100.0)
 
-                # Top 3 alternative crops with probability > 0.05%
+                # Top 3 alternative crops
                 for idx in top_indices[1:4]:
                     p = float(probas[int(idx)] * 100.0)
                     crop_name = CROP_CLASSES[int(idx)]
@@ -443,7 +485,7 @@ class MLCropRecommender:
                         )
                     )
             except Exception as exc:
-                logger.error("Error during ML inference: %s. Using heuristic fallback.", exc)
+                logger.error("Error during SVM inference: %s. Using heuristic fallback.", exc)
                 recommended_crop = self._heuristic_fallback(req)
                 confidence = 90.0
         else:
@@ -477,8 +519,8 @@ class MLCropRecommender:
             confidence=round(confidence, 2),
             alternatives=alternatives,
             agronomicGuide=guide,
-            modelName="Random Forest (Tuned)",
-            modelAccuracy=99.32,
+            modelName="SVM (Tuned) — 89.20% on 50k stress-test",
+            modelAccuracy=97.95,
             inputParameters={
                 "N": req.nitrogen,
                 "P": req.phosphorus,

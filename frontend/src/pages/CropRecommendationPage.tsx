@@ -31,12 +31,9 @@ export default function CropRecommendationPage() {
   const [loading, setLoading] = useState(false);
   const [fetchingWeather, setFetchingWeather] = useState(false);
 
-  // Fetch presets & model info
+  // Fetch presets
   const fetchPresets = useCallback(() => cropRecommendationService.presets(), []);
   const { data: presets } = useApiQuery(fetchPresets, []);
-
-  const fetchModelInfo = useCallback(() => cropRecommendationService.modelInfo(), []);
-  const { data: modelInfo } = useApiQuery(fetchModelInfo, []);
 
   // Run initial prediction on load
   useEffect(() => {
@@ -117,10 +114,7 @@ export default function CropRecommendationPage() {
             {t("cropRec.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-primary-300 bg-primary-50 px-3.5 py-1.5 text-xs font-semibold text-primary-800 dark:border-primary-700 dark:bg-primary-900/40 dark:text-primary-200">
-          <span className="flex h-2 w-2 rounded-full bg-primary-500 animate-pulse" />
-          <span>Random Forest Tuned · 99.3% Accuracy</span>
-        </div>
+
       </div>
 
       {/* Preset Chips and Live Weather Auto-fill bar */}
@@ -384,16 +378,7 @@ export default function CropRecommendationPage() {
                       Scientific prediction: <strong>{result.recommendedCrop}</strong>
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="inline-flex flex-col items-end rounded-2xl bg-white/90 px-4 py-2 shadow-sm dark:bg-soil-800/90">
-                      <span className="text-[11px] font-semibold text-soil-500 dark:text-soil-400">
-                        {t("cropRec.confidence")}
-                      </span>
-                      <span className="font-display text-2xl font-extrabold text-primary-600 dark:text-primary-400">
-                        {result.confidence}%
-                      </span>
-                    </div>
-                  </div>
+
                 </div>
 
                 {/* Confidence Bar */}
@@ -498,18 +483,6 @@ export default function CropRecommendationPage() {
                 </div>
               )}
 
-              {/* Model Transparency info card */}
-              <div className="rounded-xl border border-soil-200 bg-soil-50/70 p-4 text-xs text-soil-500 dark:border-soil-800 dark:bg-soil-900/50 dark:text-soil-400">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-soil-700 dark:text-soil-300">
-                    ⚙️ {modelInfo?.modelName ?? "Random Forest Tuned"}
-                  </span>
-                  <span>Accuracy: {modelInfo?.testAccuracy ?? 99.32}%</span>
-                </div>
-                <p className="mt-1">
-                  Trained on 2,200 agricultural trial records covering 22 crop classes under multi-variable soil chemistry and climate observations.
-                </p>
-              </div>
             </div>
           )}
         </div>
