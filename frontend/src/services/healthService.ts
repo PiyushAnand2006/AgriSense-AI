@@ -25,4 +25,7 @@ export const healthService = {
 
   logRecord: (cropId: string, input: HealthRecordInput) =>
     apiClient.post<HealthRecord>(`/crops/${cropId}/records`, input),
+
+  deleteRecord: (cropId: string, recordId: string) =>
+    apiClient.delete<void>(`/crops/${cropId}/records/${recordId}`),
 };

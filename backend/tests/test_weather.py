@@ -16,6 +16,12 @@ def _mock_payload(days: int = 8) -> dict:
     """Build a valid Open-Meteo-shaped payload."""
     today = date.today()
     return {
+        "current": {
+            "temperature_2m": 24.0,
+            "relative_humidity_2m": 60.0,
+            "wind_speed_10m": 12.0,
+            "weather_code": 0,
+        },
         "daily": {
             "time": [(today + timedelta(days=i)).isoformat() for i in range(days)],
             "temperature_2m_max": [30.0 + i for i in range(days)],

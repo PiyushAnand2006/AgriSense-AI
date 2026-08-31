@@ -40,7 +40,10 @@ class ExternalHttpClient:
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._service_name = service_name
-        default_headers = {"Accept": "application/json"}
+        default_headers = {
+            "Accept": "application/json",
+            "User-Agent": "AgriSense-AI/1.0 (https://github.com/PiyushAnand2006/AgriSense-AI; agricultural decision support)",
+        }
         if api_key:
             default_headers["Authorization"] = f"Bearer {api_key}"
         if headers:

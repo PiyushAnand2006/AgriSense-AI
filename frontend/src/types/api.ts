@@ -235,6 +235,16 @@ export interface WeatherAlert {
   message: string;
 }
 
+export interface LocationSearchResult {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  admin1?: string;
+  country?: string;
+  countryCode?: string;
+}
+
 export interface WeatherResponse {
   location: string;
   lat: number | null;

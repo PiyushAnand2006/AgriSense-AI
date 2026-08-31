@@ -1,4 +1,18 @@
-/** Formatting helpers (INR, dates, percentages). */
+import { BACKEND_ORIGIN } from "@/config/api";
+
+export function resolveImageUrl(url?: string | null): string {
+  if (!url) return "";
+  if (
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("data:") ||
+    url.startsWith("blob:")
+  ) {
+    return url;
+  }
+  const cleanPath = url.startsWith("/") ? url : `/${url}`;
+  return `${BACKEND_ORIGIN}${cleanPath}`;
+}
 
 export function formatINR(value: number, options?: { compact?: boolean }): string {
   return new Intl.NumberFormat("en-IN", {

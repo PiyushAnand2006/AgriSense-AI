@@ -10,7 +10,7 @@ import { SeverityBadge } from "@/components/common/badges";
 import { Modal } from "@/components/ui/primitives";
 import { ApiError } from "@/services/apiClient";
 import type { DiseaseInfo, HealthRecordInput, PestInfo, Severity } from "@/types/api";
-import { timeAgo } from "@/utils/format";
+import { resolveImageUrl, timeAgo } from "@/utils/format";
 
 type Tab = "diseases" | "pests" | "records";
 
@@ -23,6 +23,8 @@ export default function HealthPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [logOpen, setLogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
   const [form, setForm] = useState<HealthRecordInput>({
     recordType: "DISEASE",
     name: "",
@@ -63,6 +65,8 @@ export default function HealthPage() {
     useApiQuery(fetchRecords, [activeCropId]);
 
   const upload = async (file: File) => {
+    const localBlob = URL.createObjectURL(file);
+    setPreviewUrl(localBlob);
     setUploading(true);
     try {
       const result = await healthService.uploadImage(file);
@@ -75,6 +79,11 @@ export default function HealthPage() {
     }
   };
 
+  const handleCloseLog = useCallback(() => {
+    setLogOpen(false);
+    setPreviewUrl("");
+  }, []);
+
   const submitRecord = async () => {
     if (!form.name.trim() || submitting) return;
     setSubmitting(true);
@@ -82,13 +91,27 @@ export default function HealthPage() {
       const result = await healthService.logRecord(activeCropId, form);
       setRecords((current) => [result.data, ...(current ?? [])]);
       showToast(t("health.logRecord"), "success");
-      setLogOpen(false);
+      handleCloseLog();
       setForm({ recordType: "DISEASE", name: "", severity: "LOW", notes: "", imageUrl: "" });
       setTab("records");
     } catch (err) {
       showToast(err instanceof ApiError ? err.message : t("common.error"), "error");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDeleteRecord = async (recordId: string) => {
+    if (!activeCropId) return;
+    setDeletingId(recordId);
+    try {
+      await healthService.deleteRecord(activeCropId, recordId);
+      setRecords((current) => (current ?? []).filter((r) => r.id !== recordId));
+      showToast(t("health.recordDeleted"), "success");
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : t("common.error"), "error");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -105,7 +128,11 @@ export default function HealthPage() {
         <button
           type="button"
           className="btn-primary"
-          onClick={() => setLogOpen(true)}
+          onClick={() => {
+            setForm({ recordType: "DISEASE", name: "", severity: "LOW", notes: "", imageUrl: "" });
+            setPreviewUrl("");
+            setLogOpen(true);
+          }}
           disabled={!activeCropId}
         >
           + {t("health.logRecord")}
@@ -174,6 +201,7 @@ export default function HealthPage() {
                 prevention={disease.knowledge.prevention}
                 onLog={() => {
                   setForm((f) => ({ ...f, recordType: "DISEASE", name: disease.name }));
+                  setPreviewUrl("");
                   setLogOpen(true);
                 }}
               />
@@ -204,6 +232,7 @@ export default function HealthPage() {
                 prevention={pest.knowledge.prevention}
                 onLog={() => {
                   setForm((f) => ({ ...f, recordType: "PEST", name: pest.name }));
+                  setPreviewUrl("");
                   setLogOpen(true);
                 }}
               />
@@ -239,12 +268,31 @@ export default function HealthPage() {
                 </div>
                 {record.imageUrl && (
                   <img
-                    src={record.imageUrl}
-                    alt=""
-                    className="h-16 w-16 rounded-lg border border-soil-200 object-cover dark:border-soil-700"
+                    src={resolveImageUrl(record.imageUrl)}
+                    alt={record.name}
+                    className="h-16 w-16 rounded-lg border border-soil-200 object-cover dark:border-soil-700 bg-soil-100 dark:bg-soil-800"
                     loading="lazy"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = "none";
+                    }}
                   />
                 )}
+                <button
+                  type="button"
+                  onClick={() => void handleDeleteRecord(record.id)}
+                  disabled={deletingId === record.id}
+                  className="rounded-lg p-2 text-soil-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                  title={t("common.delete")}
+                  aria-label={t("common.delete")}
+                >
+                  {deletingId === record.id ? (
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+                    </svg>
+                  )}
+                </button>
               </li>
             ))}
           </ul>
@@ -252,11 +300,11 @@ export default function HealthPage() {
 
       <Modal
         open={logOpen}
-        onClose={() => setLogOpen(false)}
+        onClose={handleCloseLog}
         title={t("health.logRecordTitle")}
         footer={
           <>
-            <button type="button" className="btn-secondary" onClick={() => setLogOpen(false)}>
+            <button type="button" className="btn-secondary" onClick={handleCloseLog}>
               {t("common.cancel")}
             </button>
             <button type="button" className="btn-primary" onClick={() => void submitRecord()} disabled={submitting}>
@@ -338,8 +386,24 @@ export default function HealthPage() {
               }}
             />
             {uploading && <p className="mt-1 text-xs text-soil-500">{t("common.loading")}</p>}
-            {form.imageUrl && (
-              <img src={form.imageUrl} alt="" className="mt-2 h-20 w-20 rounded-lg border border-soil-200 object-cover dark:border-soil-700" />
+            {(previewUrl || form.imageUrl) && (
+              <div className="mt-2 flex items-center gap-3">
+                <img
+                  src={previewUrl || resolveImageUrl(form.imageUrl)}
+                  alt="Preview"
+                  className="h-20 w-20 rounded-lg border border-soil-200 object-cover dark:border-soil-700 bg-soil-50 dark:bg-soil-800"
+                />
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-red-600 hover:underline dark:text-red-400"
+                  onClick={() => {
+                    setPreviewUrl("");
+                    setForm((f) => ({ ...f, imageUrl: "" }));
+                  }}
+                >
+                  {t("health.removePhoto")}
+                </button>
+              </div>
             )}
           </div>
         </div>

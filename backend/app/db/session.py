@@ -11,13 +11,19 @@ from app.db.base import Base
 
 def _build_engine():
     settings = get_settings()
+    db_url = settings.database_url
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif db_url.startswith("postgresql://") and not db_url.startswith("postgresql+"):
+        db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+
     if settings.is_sqlite:
         return create_engine(
-            settings.database_url,
+            db_url,
             connect_args={"check_same_thread": False},
             pool_pre_ping=True,
         )
-    return create_engine(settings.database_url, pool_pre_ping=True)
+    return create_engine(db_url, pool_pre_ping=True)
 
 
 engine = _build_engine()

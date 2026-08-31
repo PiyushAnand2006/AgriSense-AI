@@ -113,3 +113,23 @@ def test_records_require_auth(client):
         "/api/v1/crops/wheat/records",
         json={"recordType": "DISEASE", "name": "Leaf Rust", "severity": "LOW"},
     ).status_code == 401
+
+
+def test_delete_record(client, auth):
+    res = client.post(
+        "/api/v1/crops/wheat/records",
+        json={"recordType": "DISEASE", "name": "Rust Test", "severity": "LOW"},
+        headers=auth["headers"],
+    )
+    assert res.status_code == 201
+    record_id = res.json()["id"]
+
+    delete_res = client.delete(
+        f"/api/v1/crops/wheat/records/{record_id}",
+        headers=auth["headers"],
+    )
+    assert delete_res.status_code == 204
+
+    records = client.get("/api/v1/crops/wheat/records", headers=auth["headers"]).json()
+    assert not any(r["id"] == record_id for r in records)
+

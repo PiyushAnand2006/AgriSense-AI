@@ -197,7 +197,10 @@
     "uploadHint": "JPEG/PNG/WebP, max 8 MB",
     "noRecords": "No observations logged yet — record what you spot in the field to track it over time.",
     "affectedCrops": "Affected crops",
-    "sourceNote": "Educational information — not verified agricultural guidance."
+    "sourceNote": "Educational information — not verified agricultural guidance.",
+    "recordDeleted": "Observation record removed",
+    "deleteRecordConfirm": "Delete this observation record?",
+    "removePhoto": "Remove photo"
   },
   "fertilizer": {
     "title": "Fertilizer Advisor",
@@ -253,7 +256,12 @@
     "wind": "Wind",
     "location": "Location",
     "liveSource": "Live weather API",
-    "localSource": "Local seasonal estimate"
+    "localSource": "Local seasonal estimate",
+    "useCurrentLocation": "Use Current Location",
+    "locating": "Locating…",
+    "locationError": "Unable to access your current location. Please check browser GPS permissions.",
+    "searchPlaceholder": "Search city or place…",
+    "noResults": "No places found"
   },
   "marketplace": {
     "title": "Farmer Marketplace",

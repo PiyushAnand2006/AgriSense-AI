@@ -365,7 +365,7 @@ class MLCropRecommender:
         self._model: Any | None = None
         self._model_path: Path | None = None
         self._loaded: bool = False
-        self._load_model()
+        self._attempted_load: bool = False
 
     def _locate_model_file(self) -> Path | None:
         """Finds the tuned SVM model across package resources and workspace paths."""
@@ -384,6 +384,9 @@ class MLCropRecommender:
         return None
 
     def _load_model(self) -> None:
+        if self._attempted_load:
+            return
+        self._attempted_load = True
         try:
             import joblib
 
@@ -405,6 +408,8 @@ class MLCropRecommender:
             self._loaded = False
 
     def is_loaded(self) -> bool:
+        if not self._loaded and not self._attempted_load:
+            self._load_model()
         return self._loaded and self._model is not None
 
     def get_model_info(self) -> ModelInfoResponse:

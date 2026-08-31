@@ -60,6 +60,7 @@ class WeatherClient:
             params={
                 "latitude": lat,
                 "longitude": lon,
+                "current": "temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code",
                 "daily": "temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,"
                          "precipitation_probability_max,wind_speed_10m_max,weather_code",
                 "forecast_days": max(1, min(days, 16)),
@@ -73,6 +74,7 @@ class WeatherClient:
         """Map the provider's field names onto the internal structure."""
         try:
             daily = payload["daily"]
+            current = payload.get("current")
             count = len(daily["time"])
             days: list[dict[str, Any]] = []
             for i in range(count):
@@ -80,14 +82,32 @@ class WeatherClient:
                 temp_min = float(daily["temperature_2m_min"][i])
                 rain_prob = float(daily["precipitation_probability_max"][i] or 0)
                 weather_code = int(daily["weather_code"][i] or 0)
+
+                # For Today (index 0), use the exact real-time live current measurement if available
+                if i == 0 and current is not None:
+                    temp_c = float(current.get("temperature_2m", (temp_max + temp_min) / 2))
+                    humidity_pct = float(current.get("relative_humidity_2m", daily["relative_humidity_2m_mean"][i] or 0))
+                    wind_kph = float(current.get("wind_speed_10m", daily["wind_speed_10m_max"][i] or 0))
+                    condition_code = int(current.get("weather_code", weather_code))
+                elif i == 0:
+                    temp_c = (temp_max + temp_min) / 2
+                    humidity_pct = float(daily["relative_humidity_2m_mean"][i] or 0)
+                    wind_kph = float(daily["wind_speed_10m_max"][i] or 0)
+                    condition_code = weather_code
+                else:
+                    temp_c = temp_max
+                    humidity_pct = float(daily["relative_humidity_2m_mean"][i] or 0)
+                    wind_kph = float(daily["wind_speed_10m_max"][i] or 0)
+                    condition_code = weather_code
+
                 days.append(
                     {
                         "date": date.fromisoformat(daily["time"][i]),
-                        "temperature_c": round((temp_max + temp_min) / 2, 1),
-                        "humidity_pct": round(float(daily["relative_humidity_2m_mean"][i] or 0)),
+                        "temperature_c": round(temp_c, 1),
+                        "humidity_pct": round(humidity_pct),
                         "rain_probability": round(rain_prob),
-                        "wind_kph": round(float(daily["wind_speed_10m_max"][i] or 0), 1),
-                        "condition": _condition_from_code(weather_code, rain_prob),
+                        "wind_kph": round(wind_kph, 1),
+                        "condition": _condition_from_code(condition_code, rain_prob),
                     }
                 )
             return days

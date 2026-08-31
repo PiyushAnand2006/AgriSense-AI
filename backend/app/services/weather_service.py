@@ -39,36 +39,49 @@ def _hash_float(key: str) -> float:
     return int(digest[:8], 16) / 0xFFFFFFFF
 
 
-def _day_weather(day: date) -> WeatherDay:
+def _day_weather(day: date, lat: float = DEFAULT_LAT, lon: float = DEFAULT_LON) -> WeatherDay:
     doy = day.timetuple().tm_yday
-    # North-India-like seasonal temperature curve, 16C (Jan) to 39C (Jun).
-    seasonal = 27.5 + 11.5 * math.sin((doy - 105) / 365 * 2 * math.pi)
-    temp = seasonal + (_hash_float(f"t{day}") - 0.5) * 5
-    humidity = 35 + _hash_float(f"h{day}") * 50
-    rain_prob = round(_hash_float(f"r{day}") * 100, 0)
-    # Monsoon months get a rain boost.
+    # Latitude-based climate baseline (South India warmer year-round, North India seasonal amplitude)
+    lat_factor = max(0.4, min(1.3, (lat - 8.0) / 20.0))
+    seasonal = (30.0 - (lat - 12.0) * 0.25) + 10.5 * lat_factor * math.sin((doy - 105) / 365 * 2 * math.pi)
+
+    loc_key = f"{lat:.2f}_{lon:.2f}_{day}"
+    temp = seasonal + (_hash_float(f"t_{loc_key}") - 0.5) * 4.5
+
+    # Humidity & rain influenced by longitude / coastal proximity and location hash
+    base_humidity = 42.0 + (lon - 70.0) * 0.7
+    humidity = max(25.0, min(92.0, base_humidity + (_hash_float(f"h_{loc_key}") - 0.5) * 30.0))
+
+    rain_prob = round(_hash_float(f"r_{loc_key}") * 100, 0)
+    # Monsoon months get a rain boost
     if 6 <= day.month <= 9:
-        rain_prob = min(95, rain_prob + 30)
-    wind = 5 + _hash_float(f"w{day}") * 20
+        rain_prob = min(95, rain_prob + 25)
+    else:
+        rain_prob = max(5, rain_prob - 20)
+
+    wind = 5.0 + _hash_float(f"w_{loc_key}") * 18.0
     if rain_prob >= 65:
         condition = "Rain"
     elif rain_prob >= 40:
         condition = "Cloudy"
+    elif humidity > 70 and temp > 30:
+        condition = "Showers"
     else:
-        condition = "Sunny"
+        condition = "Sunny" if _hash_float(f"c_{loc_key}") > 0.4 else "Mostly Sunny"
+
     return WeatherDay(
         date=day,
         temperature_c=round(temp, 1),
         humidity_pct=round(humidity, 0),
-        rain_probability=rain_prob,
+        rain_probability=round(rain_prob),
         wind_kph=round(wind, 1),
         condition=condition,
     )
 
 
-def _local_forecast(days: int = 8) -> list[WeatherDay]:
+def _local_forecast(days: int = 8, lat: float = DEFAULT_LAT, lon: float = DEFAULT_LON) -> list[WeatherDay]:
     today = date.today()
-    return [_day_weather(today + timedelta(days=offset)) for offset in range(days)]
+    return [_day_weather(today + timedelta(days=offset), lat=lat, lon=lon) for offset in range(days)]
 
 
 # --- Alerts (agricultural interpretation of forecast data) -----------------------
@@ -151,7 +164,7 @@ async def get_weather(lat: float | None = None, lon: float | None = None, days: 
         day_dicts = None
 
     if day_dicts is None:
-        weather_days = _local_forecast(days)
+        weather_days = _local_forecast(days, lat=lat, lon=lon)
     else:
         weather_days = [WeatherDay.model_validate(d) for d in day_dicts]
 

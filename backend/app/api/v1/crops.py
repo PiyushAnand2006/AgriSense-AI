@@ -262,3 +262,25 @@ def create_record(
                 f"recorded ({payload.severity.lower()} severity).",
     )
     return _record_out(record, crop.name)
+
+
+@router.delete("/{crop_id}/records/{record_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_record(
+    crop_id: str,
+    record_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    crop = _get_catalog_crop(db, crop_id)
+    record = db.scalar(
+        select(HealthRecord).where(
+            HealthRecord.id == record_id,
+            HealthRecord.user_id == current_user.id,
+            HealthRecord.crop_id == crop.id,
+        )
+    )
+    if record is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Health record not found.")
+    db.delete(record)
+    db.commit()
+    return None
