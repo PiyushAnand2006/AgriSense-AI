@@ -1,0 +1,8 @@
+# GitHub Linguist Configuration (Option B: Python #1 Dominant + TypeScript Visible)
+
+# Recognize Jupyter Machine Learning Notebooks as Python code
+*.ipynb linguist-language=Python
+datasets/**/*.ipynb linguist-language=Python
+
+# Exclude large static translation data and JSON files from language statistics
+frontend/src/i18n/locales/** linguist-vendored=true

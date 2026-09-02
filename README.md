@@ -17,9 +17,9 @@
 
 ## 📖 About The Project
 
-**AgriSense AI** is a REST API-driven agricultural information and decision-support platform engineered for Indian farmers. It delivers season-aware crop management, normalized mandi (market) price intelligence with historical price trends, live weather forecasts with agro-advisories, educational disease/pest management, fertilizer guidance, a farmer marketplace, and transparent sell-or-hold decision support.
+**AgriSense AI** is a production-grade agricultural intelligence and decision-support platform engineered for Indian farmers. It combines **Machine Learning crop recommendation** across 22 distinct crops, normalized mandi (market) price intelligence with historical price trends, live real-time weather forecasts with agro-advisories, interactive place search and GPS geolocation, educational disease/pest management, fertilizer guidance, a farmer marketplace, and transparent sell-or-hold decision support.
 
-The backend acts as the central API orchestration layer, owning the database (PostgreSQL on Supabase), integrating external APIs (Open-Meteo weather, mandi prices, assistant), and serving a standardized REST contract to the bilingual (English & Hindi) React frontend.
+The backend acts as the central API orchestration layer, owning the database (PostgreSQL on Supabase with Row Level Security), running Scikit-Learn ML inference pipelines, integrating external APIs (Open-Meteo ECMWF/GFS weather, mandi prices, assistant), and serving a standardized REST contract to the bilingual (English & Hindi) React frontend.
 
 ![Landing page](docs/screenshots/landing.png)
 
@@ -29,6 +29,7 @@ The backend acts as the central API orchestration layer, owning the database (Po
 
 - [📖 About The Project](#-about-the-project)
 - [🌟 Key Features](#-key-features)
+- [🤖 Machine Learning Architecture](#-machine-learning-architecture)
 - [📸 Interface Tour](#-interface-tour)
 - [🏛️ System Architecture](#-system-architecture)
 - [🛠️ Technology Stack](#-technology-stack)
@@ -37,7 +38,7 @@ The backend acts as the central API orchestration layer, owning the database (Po
 - [⚙️ Environment Variables](#-environment-variables)
 - [📡 API Overview](#-api-overview)
 - [🧠 Key Workflows](#-key-workflows)
-- [🗄️ Database Schema](#-database-schema)
+- [🗄️ Database Schema & Security](#-database-schema--security)
 - [🧪 Testing](#-testing)
 - [⚠️ Disclaimers](#-disclaimers)
 
@@ -47,16 +48,70 @@ The backend acts as the central API orchestration layer, owning the database (Po
 
 | Capability | Description |
 |---|---|
+| **🤖 ML Crop Recommendation** | Tuned **Support Vector Machine (SVM)** model predicting the most suitable crop out of **22 Indian crops** based on 7 soil & environmental parameters with confidence scoring and optimal growing requirements. |
 | **🌾 Season & Crop Catalog** | Database-driven catalog covering **Rabi** (wheat, chickpea, mustard, potato) and **Zaid/summer** (watermelon, cucumber, muskmelon, moong) crops with growing calendars. |
-| **📈 Mandi Price Intelligence** | Normalized mandi price board (min / max / modal per quintal), 90-day history and rule-computed 7/14/30-day trends across 8 major Indian markets. |
-| **⚖️ Sell or Hold Decision Engine** | A transparent rule engine comparing market trends against warehouse storage costs to output clearly reasoned recommendations. |
-| **🌦️ Live Weather & Agro Alerts** | Real-time weather via Open-Meteo integration with automated agricultural alerts; falls back to local seasonal data when the provider is unavailable. |
-| **🩺 Crop Health & Field Records** | Educational disease & pest database with symptoms, organic alternatives, and prevention. Farmers can log field observations with severity and photos. |
+| **📈 Mandi Price Intelligence** | Normalized mandi price board (min / max / modal per quintal), 90-day history, and rule-computed 7/14/30-day trends across major Indian markets. |
+| **⚖️ Sell or Hold Decision Engine** | Transparent rule engine comparing market trends against warehouse storage costs to output clearly reasoned recommendations. |
+| **🌦️ Live Weather & Geocoding Search** | Real-time weather via Open-Meteo (ECMWF/GFS models), interactive city search bar with autocomplete, GPS one-click location detection, and agricultural risk alerts. |
+| **🩺 Crop Health & Field Records** | Educational disease & pest database with symptoms, organic alternatives, and prevention. Farmers can log and delete field observations with severity and photos. |
 | **🧪 Fertilizer Guidance** | Rule-based, stage- and soil-aware nutrient recommendations for balanced NPK application. |
 | **🛒 Farmer Marketplace** | Community trade board with crop listings, unit pricing, search, location filters, and ownership controls. |
-| **💬 Farmer Assistant** | Chat interface backed by a rule-based engine, with support for external conversational AI APIs. |
+| **💬 Farmer Assistant** | Chat interface backed by an agricultural knowledge engine with conversational fallback support. |
 | **📊 Aggregated Dashboard** | Unified dashboard combining crop records, market movements, weather forecasts, and notification feeds with graceful degradation. |
 | **🌐 Bilingual Support** | Native, full-interface localization in both **English** and **Hindi (हिंदी)**. |
+
+---
+
+## 🤖 Machine Learning Architecture
+
+The **Crop Recommendation Engine** helps farmers determine the optimal crop to cultivate by analyzing 7 agronomic and meteorological factors:
+
+$$\vec{x} = \big[ N, P, K, \text{Temperature (°C)}, \text{Humidity (\%), pH, Rainfall (mm)} \big]$$
+
+```
+                        [ N, P, K, Temp, Humidity, pH, Rainfall ]
+                                          │
+                                          ▼
+                      ┌───────────────────────────────────────┐
+                      │    Tuned Support Vector Classifier    │
+                      │         (RBF Kernel, C=10.0)          │
+                      └───────────────────┬───────────────────┘
+                                          │
+                        Decision Margins: f(x) ∈ ℝ²²
+                                          │
+                                          ▼
+                      ┌───────────────────────────────────────┐
+                      │      Stable Softmax Normalization     │
+                      │  P(Crop_i | x) = exp(z_i) / Σ exp(z_j)│
+                      └───────────────────┬───────────────────┘
+                                          │
+                                          ▼
+                   Top-1 Primary Crop Recommendation + Confidence Score
+                   + Agricultural Ideal Range Diagnostics (N, P, K, pH)
+```
+
+### 🏆 Model Selection & Benchmark Evaluation
+
+5 machine learning algorithms were benchmarked across standard validation data and a **50,000-sample unseen stress-test suite** (containing simulated noisy sensor inputs and severe boundary overlap):
+
+| Model | Standard Accuracy (2,200 rows) | Unseen Stress Test (50k rows) | Noisy Sensor Accuracy | Decision Overlap Accuracy |
+|---|:---:|:---:|:---:|:---:|
+| **Tuned SVM (Selected)** 🥇 | **98.68%** | **89.20%** | **90.05%** | **53.52%** |
+| Random Forest | 99.09% | 88.08% | 89.14% | 47.96% |
+| XGBoost Classifier | 98.64% | 88.35% | 89.26% | 48.96% |
+| Gaussian Naive Bayes | 99.09% | 87.87% | 89.18% | 48.33% |
+| K-Nearest Neighbors | 98.18% | 85.12% | 86.20% | 44.48% |
+
+### 🌾 Supported Crop Classes (All 22 Crops)
+* **Cereals & Grains:** Rice, Maize
+* **Pulses & Legumes:** Chickpea, Kidney Beans, Pigeon Peas, Moth Beans, Mung Bean, Black Gram, Lentil
+* **Fruits:** Pomegranate, Banana, Mango, Grapes, Watermelon, Muskmelon, Apple, Orange, Papaya, Coconut
+* **Cash Crops & Fibers:** Cotton, Jute, Coffee
+
+### 💡 Production Engineering Highlights
+- **Numerically Stable Softmax:** Computes calibrated probabilities over one-vs-rest hyperplanes using $z_i = \text{decision\_function}(\vec{x})_i$ with $z_{\max}$ offset subtraction to prevent floating-point overflow.
+- **Lazy Loading Singleton:** Packaged within `backend/app/ml_models/SVM_tunned_model.pkl` and loaded on-demand to ensure fast Docker container cold-starts and low memory footprints.
+- **Agronomic Requirements Mapping:** Enriches predictions with standard N-P-K nutrient targets, climate tolerances, growing seasons, and soil requirements.
 
 ---
 
@@ -66,11 +121,11 @@ The backend acts as the central API orchestration layer, owning the database (Po
 | :---: | :---: |
 | ![Sign In](docs/screenshots/login.png) | ![Create Account](docs/screenshots/register.png) |
 
-| Farmer Dashboard | Crop Management |
+| Farmer Dashboard | Crop Recommendation (ML) |
 | :---: | :---: |
-| ![Dashboard](docs/screenshots/dashboard.png) | ![My Crops](docs/screenshots/crops.png) |
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Crop Recommendation](docs/screenshots/crops.png) |
 
-| Market Price Intelligence | Live Weather Forecast |
+| Market Price Intelligence | Live Weather & City Search |
 | :---: | :---: |
 | ![Market Prices](docs/screenshots/market.png) | ![Weather Forecast](docs/screenshots/weather.png) |
 
@@ -86,12 +141,12 @@ The backend acts as the central API orchestration layer, owning the database (Po
 
 ## 🏛️ System Architecture
 
-The frontend speaks only to the backend's versioned REST API (`/api/v1`, JSON over HTTP with JWT bearer authentication). The backend owns the database, cache, and third-party integrations; external payloads are validated and normalized once, inside the backend, so the frontend only ever sees stable internal shapes.
+The frontend communicates with the backend's versioned REST API (`/api/v1`, JSON over HTTP with JWT bearer authentication). The backend acts as the single source of truth, validating all inputs, managing database transactions, caching responses, and orchestrating ML models and external APIs.
 
 ```mermaid
 flowchart TD
     subgraph Frontend["Frontend Client (React + Vite + Tailwind)"]
-        UI[UI Components & Layouts]
+        UI[UI Components & Autocomplete Search]
         Store[Context Store: Auth, Crop, Theme, I18n]
         APIService[Typed API Client]
         UI --> Store
@@ -101,13 +156,15 @@ flowchart TD
     subgraph Backend["Backend Layer (FastAPI)"]
         MW[Middleware: Correlation ID, Structured Logging, Rate Limiting]
         Routers["Versioned Routers (/api/v1)"]
-        Services["Service Layer: Market, Weather, Recommendations, Health, Dashboard"]
+        MLService["ML Inference Engine (Tuned SVM - 22 Crops)"]
+        Services["Service Layer: Market, Weather, Recommendations, Health"]
         ExtClients["External Clients (Shared httpx with Retry & Backoff)"]
-        Cache["Cache Layer (Redis / Local TTL)"]
-        DBLayer["ORM & Database Layer (SQLAlchemy)"]
+        Cache["Cache Layer (Redis / In-Memory TTL)"]
+        DBLayer["ORM & Database Layer (SQLAlchemy 2.0)"]
 
         APIService -->|HTTP / JSON + JWT Bearer| MW
         MW --> Routers
+        Routers --> MLService
         Routers --> Services
         Services <--> Cache
         Services --> ExtClients
@@ -115,15 +172,15 @@ flowchart TD
     end
 
     subgraph External["Data Sources & Persistence"]
-        DB[(PostgreSQL / SQLite)]
-        WeatherAPI[Open-Meteo Weather API]
+        DB[(PostgreSQL on Supabase with RLS)]
+        WeatherAPI[Open-Meteo Weather API ECMWF/GFS]
+        GeocodingAPI[Open-Meteo Geocoding API]
         MandiAPI[Agmarknet / Mandi Price Feed]
-        ExtLLM[Optional External AI Assistant]
 
         DBLayer <--> DB
         ExtClients --> WeatherAPI
+        ExtClients --> GeocodingAPI
         ExtClients --> MandiAPI
-        ExtClients --> ExtLLM
     end
 ```
 
@@ -134,11 +191,12 @@ flowchart TD
 | Layer | Technologies |
 |---|---|
 | **Frontend** | React 18, TypeScript 5.5, Vite 5.4, Tailwind CSS 3.4, React Router 6, Recharts, Marked, DOMPurify |
-| **Backend** | Python 3.11, FastAPI, Pydantic v2, SQLAlchemy 2.0, Uvicorn, httpx (async client) |
-| **Database** | PostgreSQL 16 (production on Supabase / Docker) / SQLite (zero-setup local development) |
+| **Backend** | Python 3.11, FastAPI, Pydantic v2, SQLAlchemy 2.0, Uvicorn, httpx (async HTTP client) |
+| **Machine Learning** | Scikit-Learn (SVM RBF), NumPy, Joblib |
+| **Database** | PostgreSQL 16 on Supabase (with Row Level Security) / SQLite fallback |
 | **Caching** | Redis 7 / In-memory process-local TTL cache fallback |
-| **Security & Auth** | JWT (HS256) with Passlib & Bcrypt password hashing, rate limiting, magic-byte upload validation |
-| **Localization** | Custom lightweight I18n provider supporting English and Hindi (हिंदी) |
+| **Security & Auth** | JWT (HS256) with Passlib & Bcrypt, Supabase RLS, rate limiting, magic-byte upload validation |
+| **Localization** | Lightweight custom I18n provider supporting English and Hindi (हिंदी) |
 | **Deployment** | Vercel (Frontend), Render (Backend), Supabase (Database), Docker Compose |
 
 ---
@@ -151,32 +209,32 @@ AgriSense-AI/
 |   |-- src/
 |   |   |-- api/               auth provider
 |   |   |-- assets/            logos, crop illustrations
-|   |   |-- components/        layout, UI primitives, shared states and badges
-|   |   |-- config/            API base URL, feature flags
+|   |   |-- components/        layout, UI primitives, modal, shared states
+|   |   |-- config/            API base URL, backend origin
 |   |   |-- hooks/             data fetching, debounce, online status
 |   |   |-- i18n/              English + Hindi dictionaries
-|   |   |-- pages/             13 application pages
+|   |   |-- pages/             13 application pages (Crop Recommendation, Weather, Health, etc.)
 |   |   |-- services/          typed API service modules (single fetch client)
 |   |   |-- store/             crop selection, notifications, theme contexts
-|   |   |-- types/             API contract types mirroring the backend
-|   |   `-- utils/             formatting, safe markdown rendering
+|   |   |-- types/             API contract types mirroring backend schemas
+|   |   `-- utils/             formatting, image resolution, markdown
 |-- backend/
 |   |-- app/
-|   |   |-- api/v1/            REST routers (versioned)
+|   |   |-- api/v1/            REST routers (versioned: crops, weather, recommendation, etc.)
 |   |   |-- core/              config, security, cache, errors
 |   |   |-- db/                engine, session, idempotent seeding
 |   |   |-- external/          weather, mandi and assistant clients
 |   |   |-- middleware/        request context, rate limiting
+|   |   |-- ml_models/         packaged trained SVM model binary (SVM_tunned_model.pkl)
 |   |   |-- models/            SQLAlchemy ORM models
 |   |   |-- schemas/           Pydantic request/response schemas
-|   |   `-- services/          business logic
-|   `-- tests/                 pytest suite, external APIs always mocked
-|-- docs/
-|   |-- api.md                 endpoint reference
-|   |-- api-pipeline.md        six documented end-to-end pipelines
-|   |-- architecture.md        architecture deep-dive
-|   |-- external-apis.md       integration and normalization details
-|   `-- screenshots/           interface screenshots used in this README
+|   |   `-- services/          ML crop service, weather service, market service
+|   |-- tests/                 83 automated pytest test cases (100% pass)
+|   |-- Dockerfile             production container configuration
+|   `-- requirements.txt       backend dependencies
+|-- datasets/
+|   `-- crop recommendation/   evaluation notebooks and datasets (2.2k and 50k stress-test)
+|-- render.yaml                Render deployment blueprint
 |-- docker-compose.yml         postgres + redis + backend + frontend
 |-- .env.example               environment variable template
 `-- README.md
@@ -205,7 +263,7 @@ docker compose up --build
 
 ### Option 2: Local Development (Zero Infrastructure)
 
-The backend defaults to a local SQLite file and seeds reference data (8 crops, 8 mandis, 120 days of deterministic prices, demo user, sample records and listings) on startup.
+The backend defaults to a local SQLite database and automatically seeds initial reference data on startup.
 
 **1. Backend:**
 ```bash
@@ -231,7 +289,7 @@ npm run dev        # http://localhost:5173
 
 ## ⚙️ Environment Variables
 
-Copy `.env.example` to `.env` (backend reads `backend/.env`). Every external integration is optional; when unconfigured, database fallbacks apply and each response discloses its `source`.
+Copy `.env.example` to `.env` (backend reads `backend/.env`). Every external integration is optional; when unconfigured, database fallbacks apply.
 
 | Variable | Purpose | Default |
 |---|---|---|
@@ -240,25 +298,22 @@ Copy `.env.example` to `.env` (backend reads `backend/.env`). Every external int
 | `ACCESS_TOKEN_EXPIRE_DAYS` | Access token lifetime | `7` |
 | `CORS_ORIGINS` | Comma-separated allowed browser origins | `http://localhost:5173,...` |
 | `UPLOAD_DIR` / `MAX_UPLOAD_MB` | Crop image upload storage and size cap | `uploads` / `8` |
-| `WEATHER_API_URL` / `WEATHER_API_KEY` | Open-Meteo-compatible weather endpoint | `https://api.open-meteo.com/v1` |
-| `MANDI_API_URL` / `MANDI_API_KEY` | AGMARKNET-style price feed; empty serves database data (`mandi-db`) | empty |
-| `ASSISTANT_API_URL` / `ASSISTANT_API_KEY` | External conversational API; empty uses the rule-based assistant | empty |
-| `REDIS_URL` | Shared cache backend; empty uses a process-local TTL cache | empty |
-| `RATE_LIMIT_AUTH` / `RATE_LIMIT_ASSISTANT` / `RATE_LIMIT_UPLOADS` | Fixed-window limits, requests per minute per IP | `30` / `20` / `30` |
+| `WEATHER_API_URL` | Open-Meteo-compatible weather endpoint | `https://api.open-meteo.com/v1` |
+| `REDIS_URL` | Shared cache backend; empty uses process-local TTL cache | empty |
 | `VITE_API_BASE_URL` | API base URL used by the frontend | `http://localhost:8000/api/v1` |
 
 ---
 
 ## 📡 API Overview
 
-All endpoints are versioned under `/api/v1`. The full reference with request and response shapes is in [docs/api.md](docs/api.md); interactive OpenAPI documentation is served at `/docs`.
+All endpoints are versioned under `/api/v1`. Interactive OpenAPI documentation is served at `/docs`.
 
 | Area | Endpoints |
 |---|---|
+| **Crop Recommendation (ML)** | `POST /api/v1/crop-recommendation/predict` (22 crops, SVM RBF model) |
 | **System & Health** | `GET /api/v1/system`; `GET /health`, `GET /health/live`, `GET /health/ready` |
 | **Authentication** | `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `PATCH /auth/me` |
-| **Seasons** | `GET /seasons`, `GET /seasons/{id}`, `GET /seasons/{id}/crops` |
-| **Crops** | `GET/POST /crops`, `GET/PATCH/DELETE /crops/{id}`, crop-scoped subresources |
+| **Seasons & Crops** | `GET /seasons`, `GET/POST /crops`, `GET/PATCH/DELETE /crops/{id}`, `GET/POST/DELETE /crops/{crop_id}/records` |
 | **Knowledge Base** | `GET /diseases`, `GET /pests`, `GET /treatments`, `GET /fertilizers` |
 | **Fertilizer Guidance** | `POST /fertilizer-guidance` (soil & stage-aware) |
 | **Market Intelligence** | `GET /market/markets`, `GET /market/prices`, `GET /market/trends/{cropId}` |
@@ -272,40 +327,33 @@ All endpoints are versioned under `/api/v1`. The full reference with request and
 
 ---
 
-## 🧠 Key Workflows
+## 🗄️ Database Schema & Security
 
-### Request Lifecycle with Correlation
-Every request carries an `X-Request-ID` end to end. A typical lookup travels frontend to middleware (correlation, rate limiting, logging) to the router (validation only), into the service layer, which reads normalized rows from the database, optionally consults external feeds, computes trends, and returns standardized data.
+All 13 public tables are protected with **Supabase Row Level Security (RLS)**, ensuring zero unauthorized direct public access via client keys, while the backend maintains full transactional access via PostgreSQL superuser connections.
 
-### Sell or Hold Decision Engine
-`POST /recommendations/sell-hold` loads current modal prices and 90-day recorded history, computes 7/14/30-day trends, and projects prices over the requested storage window (trend extrapolation, capped at ±20%). The expected net return is the projection minus the current price minus monthly storage costs; if it clears the farmer's risk threshold (LOW 2%, MEDIUM 0.5%, HIGH 0%), the engine answers **HOLD**, otherwise **SELL**.
-
----
-
-## 🗄️ Database Schema
-
-| Entity | Purpose | Relationships |
+| Entity | Purpose | Security & Ownership |
 |---|---|---|
-| `users` | Accounts with bcrypt-hashed credentials | Owns profile, plantings, health records, recommendations, notifications, chat |
+| `users` | User accounts with bcrypt-hashed credentials | Protected with RLS |
 | `farmer_profiles` | Village, district, state, farm size in acres | One-to-one with `users` |
-| `crops` | Catalog: season, growing period, sowing and harvest windows | Planted as `farmer_crops`, priced in `market_prices`, listed in `crop_listings` |
-| `markets` | Mandi reference data (8 markets) | Lists `market_prices` |
-| `market_prices` | Daily min / max / modal price per quintal | Belongs to a `crop` and a `market` |
-| `health_records` | Field observations: disease or pest, severity, optional photo | Belongs to a `user` and a `crop` |
-| `sell_hold_recommendations` | Decisions with trend, storage cost, expected return and reason | Belongs to a `user` and a `crop` |
-| `crop_listings` | Marketplace listings: quantity, asking price, status | Belongs to a farmer (`user`) and a `crop` |
-| `assistant_conversations` | Chat history with the assistant | Owned by a `user` |
+| `crops` | Catalog: season, growing period, sowing and harvest windows | Reference catalog |
+| `farmer_crops` | User-planted crops and harvest dates | Scoped to authenticated user |
+| `health_records` | Field observations: disease/pest, severity, photo URL | User-owned with delete support |
+| `markets` & `market_prices` | Mandi reference data and daily price records | Reference data |
+| `sell_hold_recommendations` | Decision outputs with storage cost and expected return | Scoped to user and crop |
+| `crop_listings` | Marketplace trade listings with contact info | User-owned trade listings |
+| `assistant_conversations` & `messages`| Farmer assistant conversational history | Scoped to authenticated user |
+| `notifications` | In-app alerts for weather, market, and field records | User-scoped notification feed |
 
 ---
 
 ## 🧪 Testing
 
 ```bash
-# Run backend pytest suite (with mocked external services)
+# Run backend pytest suite (83 tests, 100% pass)
 cd backend
 pytest tests/ -v
 
-# Run frontend type check & production build
+# Run frontend TypeScript check & production build
 cd frontend
 npm run build
 ```
