@@ -83,13 +83,13 @@ export default function AppLayout() {
       <p className="mb-1.5 px-1 text-xs font-semibold uppercase tracking-wide text-soil-500 dark:text-soil-400">
         {t("season.title")}
       </p>
-      <div className="grid grid-cols-2 gap-1 rounded-xl bg-soil-100 p-1 dark:bg-soil-800">
-        {(["RABI", "ZAID"] as const).map((s) => (
+      <div className="grid grid-cols-3 gap-1 rounded-xl bg-soil-100 p-1 dark:bg-soil-800">
+        {(["RABI", "KHARIF", "ZAID"] as const).map((s) => (
           <button
             key={s}
             type="button"
             onClick={() => setSeason(s)}
-            className={`rounded-lg px-2 py-1.5 text-xs font-bold transition-colors ${
+            className={`rounded-lg px-1.5 py-1.5 text-center text-xs font-bold transition-colors ${
               season === s
                 ? "bg-white text-primary-700 shadow-sm dark:bg-soil-950 dark:text-primary-300"
                 : "text-soil-500 hover:text-soil-800 dark:text-soil-400 dark:hover:text-soil-200"

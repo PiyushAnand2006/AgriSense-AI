@@ -25,7 +25,7 @@ const CropContext = createContext<CropSelection | null>(null);
 export function CropProvider({ children }: { children: ReactNode }) {
   const [season, setSeasonState] = useState<Season>(() => {
     const stored = localStorage.getItem(SEASON_KEY);
-    return stored === "ZAID" ? "ZAID" : "RABI";
+    return stored === "KHARIF" ? "KHARIF" : stored === "ZAID" ? "ZAID" : "RABI";
   });
   const [cropId, setCropId] = useState<string | null>(() => localStorage.getItem(CROP_KEY));
 

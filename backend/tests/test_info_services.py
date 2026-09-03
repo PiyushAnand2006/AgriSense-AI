@@ -117,7 +117,7 @@ def test_fertilizer_guidance_validation(client, auth):
     # Unknown crop id is a 400 from the route.
     unknown = client.post(
         "/api/v1/fertilizer-guidance",
-        json={"cropId": "banana", "growthStage": "SOWING", "soilCondition": "SANDY"},
+        json={"cropId": "dragonfruit", "growthStage": "SOWING", "soilCondition": "SANDY"},
         headers=auth["headers"],
     )
     assert unknown.status_code == 400

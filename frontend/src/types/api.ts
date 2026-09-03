@@ -6,7 +6,7 @@
  * (the backend owns external API normalization).
  */
 
-export type Season = "RABI" | "ZAID";
+export type Season = "RABI" | "KHARIF" | "ZAID";
 export type Severity = "LOW" | "MODERATE" | "HIGH";
 export type Risk = "LOW" | "MEDIUM" | "HIGH";
 export type ListingStatus = "ACTIVE" | "SOLD" | "EXPIRED";
@@ -18,7 +18,7 @@ export type TrendLabel = "UPWARD" | "DOWNWARD" | "FLAT";
 // --- Seasons -----------------------------------------------------------------
 
 export interface SeasonInfo {
-  id: string; // "rabi" | "zaid"
+  id: string; // "rabi" | "kharif" | "zaid"
   name: string;
   label: string;
 }

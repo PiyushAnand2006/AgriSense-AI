@@ -56,7 +56,7 @@ def test_validation_rejects_bad_input(client, auth):
 
 
 def test_unknown_crop_or_market_is_400(client, auth):
-    assert _request(client, auth["headers"], cropId="banana").status_code == 400
+    assert _request(client, auth["headers"], cropId="dragonfruit").status_code == 400
 
 
 def test_requires_auth(client):

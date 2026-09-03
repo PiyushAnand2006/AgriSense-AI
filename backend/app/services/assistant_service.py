@@ -119,13 +119,22 @@ async def _rule_based_reply(db: Session, user: User, message: str) -> str:
             None,
         )
         return _market_reply(db, crop_hint)
-    if "rabi" in text or "zaid" in text or "season" in text or "sow" in text or "plant" in text:
-        season = "RABI" if "zaid" not in text else "ZAID"
+    if "rabi" in text or "kharif" in text or "monsoon" in text or "zaid" in text or "season" in text or "sow" in text or "plant" in text:
+        if "kharif" in text or "monsoon" in text or "rainy" in text:
+            season = "KHARIF"
+            desc = "Monsoon-sown (Jun–Jul), harvested in autumn (Sep–Oct)."
+        elif "zaid" in text or "summer" in text:
+            season = "ZAID"
+            desc = "Summer-sown (Mar–Jun), short-season crops with irrigation."
+        else:
+            season = "RABI"
+            desc = "Winter-sown (Oct–Mar), harvested in spring."
+
         crops = db.scalars(select(Crop).where(Crop.season == season)).all()
         names = ", ".join(c.name for c in crops)
         return (
             f"**{season.title()} season crops** supported in AgriSense: {names}.\n\n"
-            f"{'Winter-sown (Oct–Mar), harvested in spring.' if season == 'RABI' else 'Summer-sown (Mar–Jun), short-season crops with irrigation.'}\n"
+            f"{desc}\n"
             "_Educational planning guidance._"
         )
     if "disease" in text or "pest" in text or "rust" in text or "blight" in text or "yellow" in text:

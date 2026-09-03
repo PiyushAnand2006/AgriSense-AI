@@ -58,8 +58,10 @@
   "season": {
     "title": "Choose Season",
     "RABI": "Rabi / Winter",
+    "KHARIF": "Kharif / Monsoon",
     "ZAID": "Zaid / Summer",
     "RABI_desc": "Winter crops sown October–November, harvested March–April",
+    "KHARIF_desc": "Monsoon crops sown June–July, harvested September–October",
     "ZAID_desc": "Short summer crops sown March–June with irrigation"
   },
   "landing": {
@@ -76,7 +78,7 @@
     "problem3Body": "Agricultural officers can't reach every village. Good guidance should fit in a pocket.",
     "howTitle": "How AgriSense AI works",
     "howStep1Title": "Pick your season & crop",
-    "howStep1Body": "Rabi or Zaid — the platform adapts to what you're actually growing.",
+    "howStep1Body": "Rabi, Kharif, or Zaid — the platform adapts to what you're actually growing.",
     "howStep2Title": "Know what to watch for",
     "howStep2Body": "Browse the common diseases and pests for your crop with symptoms and management guidance.",
     "howStep3Title": "Watch the market",

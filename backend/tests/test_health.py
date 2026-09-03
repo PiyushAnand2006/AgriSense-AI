@@ -101,7 +101,7 @@ def test_record_validation(client, auth):
 
     # Unknown crop is a 404.
     missing_crop = client.post(
-        "/api/v1/crops/banana/records",
+        "/api/v1/crops/dragonfruit/records",
         json={"recordType": "DISEASE", "name": "Leaf Spot", "severity": "LOW"},
         headers=auth["headers"],
     )

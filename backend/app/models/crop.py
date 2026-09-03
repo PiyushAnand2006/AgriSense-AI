@@ -20,7 +20,7 @@ class Crop(Base):
 
     id: Mapped[str] = mapped_column(String(40), primary_key=True)  # slug e.g. "wheat"
     name: Mapped[str] = mapped_column(String(80), nullable=False)
-    season: Mapped[str] = mapped_column(String(10), nullable=False, index=True)  # RABI | ZAID
+    season: Mapped[str] = mapped_column(String(10), nullable=False, index=True)  # RABI | KHARIF | ZAID
     scientific_name: Mapped[str | None] = mapped_column(String(120))
     description: Mapped[str] = mapped_column(String(600), default="")
     image_url: Mapped[str] = mapped_column(String(300), default="")

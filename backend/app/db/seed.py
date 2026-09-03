@@ -24,6 +24,7 @@ EPOCH = date(2026, 1, 1)  # fixed origin so date -> price is deterministic
 PRICE_HISTORY_DAYS = 120
 
 CROPS: list[dict] = [
+    # --- RABI CROPS (Winter / Spring) ---
     {
         "id": "wheat", "name": "Wheat", "season": "RABI",
         "scientific_name": "Triticum aestivum",
@@ -49,6 +50,62 @@ CROPS: list[dict] = [
         "growing_period_days": 100, "sowing_window": "Oct–Nov", "harvest_window": "Jan–Feb",
     },
     {
+        "id": "lentil", "name": "Lentil / Masoor", "season": "RABI",
+        "scientific_name": "Lens culinaris",
+        "description": "Valuable Rabi pulse grown across northern and central plains; thrives in cool weather with low moisture.",
+        "growing_period_days": 120, "sowing_window": "Oct–Nov", "harvest_window": "Feb–Mar",
+    },
+    {
+        "id": "apple", "name": "Apple", "season": "RABI",
+        "scientific_name": "Malus domestica",
+        "description": "Temperate fruit crop requiring winter chilling; primary fruit cash crop in hill regions.",
+        "growing_period_days": 165, "sowing_window": "Dec–Feb", "harvest_window": "Jul–Sep",
+    },
+    # --- KHARIF CROPS (Monsoon / Autumn) ---
+    {
+        "id": "rice", "name": "Rice / Paddy", "season": "KHARIF",
+        "scientific_name": "Oryza sativa",
+        "description": "The primary staple kharif grain in India, requiring abundant water, warm temperatures, and humid monsoon climate.",
+        "growing_period_days": 135, "sowing_window": "Jun–Jul", "harvest_window": "Oct–Nov",
+    },
+    {
+        "id": "maize", "name": "Maize / Makka", "season": "KHARIF",
+        "scientific_name": "Zea mays",
+        "description": "High-yield kharif cereal and feed crop; highly responsive to nitrogen and warm monsoon sunshine.",
+        "growing_period_days": 100, "sowing_window": "Jun–Jul", "harvest_window": "Sep–Oct",
+    },
+    {
+        "id": "cotton", "name": "Cotton / Kapas", "season": "KHARIF",
+        "scientific_name": "Gossypium hirsutum",
+        "description": "Leading commercial fiber crop grown extensively in black cotton soils during monsoon.",
+        "growing_period_days": 165, "sowing_window": "May–Jun", "harvest_window": "Nov–Jan",
+    },
+    {
+        "id": "jute", "name": "Jute / Patson", "season": "KHARIF",
+        "scientific_name": "Corchorus olitorius",
+        "description": "Golden natural fiber crop thriving in humid monsoon alluvial river plains.",
+        "growing_period_days": 135, "sowing_window": "Mar–May", "harvest_window": "Jul–Sep",
+    },
+    {
+        "id": "pigeonpeas", "name": "Pigeonpeas / Arhar / Tur", "season": "KHARIF",
+        "scientific_name": "Cajanus cajan",
+        "description": "Major monsoon legume providing protein-rich dal; deep taproots offer high drought resilience.",
+        "growing_period_days": 165, "sowing_window": "Jun–Jul", "harvest_window": "Nov–Dec",
+    },
+    {
+        "id": "blackgram", "name": "Black Gram / Urad", "season": "KHARIF",
+        "scientific_name": "Vigna mungo",
+        "description": "Short-duration kharif pulse; excellent for soil fertility restoration and intercropping.",
+        "growing_period_days": 80, "sowing_window": "Jun–Jul", "harvest_window": "Sep–Oct",
+    },
+    {
+        "id": "mothbeans", "name": "Moth Beans / Matki", "season": "KHARIF",
+        "scientific_name": "Vigna aconitifolia",
+        "description": "Exceptionally drought-hardy arid legume grown in low rainfall arid tracts during monsoon.",
+        "growing_period_days": 70, "sowing_window": "Jul–Aug", "harvest_window": "Sep–Oct",
+    },
+    # --- ZAID CROPS (Summer) ---
+    {
         "id": "watermelon", "name": "Watermelon", "season": "ZAID",
         "scientific_name": "Citrullus lanatus",
         "description": "Classic Zaid summer crop with high water demand and quick market turnover.",
@@ -72,6 +129,54 @@ CROPS: list[dict] = [
         "description": "Summer pulse that fixes nitrogen and fits the short Zaid window.",
         "growing_period_days": 75, "sowing_window": "Mar–Apr", "harvest_window": "Jun",
     },
+    {
+        "id": "banana", "name": "Banana", "season": "ZAID",
+        "scientific_name": "Musa acuminata",
+        "description": "Year-round commercial fruit crop requiring abundant irrigation and rich nutrients.",
+        "growing_period_days": 330, "sowing_window": "Feb–May", "harvest_window": "Year-round",
+    },
+    {
+        "id": "mango", "name": "Mango", "season": "ZAID",
+        "scientific_name": "Mangifera indica",
+        "description": "The king of Indian fruits; summer harvest with high commercial and export value.",
+        "growing_period_days": 120, "sowing_window": "Jul–Aug", "harvest_window": "Apr–Jul",
+    },
+    {
+        "id": "papaya", "name": "Papaya", "season": "ZAID",
+        "scientific_name": "Carica papaya",
+        "description": "Fast-growing tropical fruit with year-round continuous fruiting after 9 months.",
+        "growing_period_days": 270, "sowing_window": "Feb–Apr", "harvest_window": "Nov–Mar",
+    },
+    {
+        "id": "pomegranate", "name": "Pomegranate / Anar", "season": "ZAID",
+        "scientific_name": "Punica granatum",
+        "description": "High-value semi-arid fruit with excellent drought tolerance and steady market demand.",
+        "growing_period_days": 180, "sowing_window": "Jan–Feb", "harvest_window": "Jul–Sep",
+    },
+    {
+        "id": "orange", "name": "Orange / Citrus", "season": "ZAID",
+        "scientific_name": "Citrus sinensis",
+        "description": "Commercial citrus fruit popular in central and western sub-tropical tracts.",
+        "growing_period_days": 240, "sowing_window": "Jun–Aug", "harvest_window": "Dec–Feb",
+    },
+    {
+        "id": "grapes", "name": "Grapes", "season": "ZAID",
+        "scientific_name": "Vitis vinifera",
+        "description": "High-return commercial horticultural crop grown on trellis systems in semi-arid zones.",
+        "growing_period_days": 135, "sowing_window": "Oct–Nov", "harvest_window": "Mar–Apr",
+    },
+    {
+        "id": "coconut", "name": "Coconut", "season": "ZAID",
+        "scientific_name": "Cocos nucifera",
+        "description": "Coastal plantation crop yielding nuts, oil, and copra year-round.",
+        "growing_period_days": 365, "sowing_window": "May–Jun", "harvest_window": "Year-round",
+    },
+    {
+        "id": "coffee", "name": "Coffee", "season": "ZAID",
+        "scientific_name": "Coffea arabica",
+        "description": "Shade-grown plantation crop in southern hill tracts with high export value.",
+        "growing_period_days": 240, "sowing_window": "Jun–Aug", "harvest_window": "Nov–Jan",
+    },
 ]
 
 MARKETS: list[dict] = [
@@ -87,7 +192,12 @@ MARKETS: list[dict] = [
 
 BASE_PRICES = {
     "wheat": 2400, "chickpea": 5200, "mustard": 5400, "potato": 1250,
+    "lentil": 6200, "apple": 8500,
+    "rice": 2300, "maize": 2150, "cotton": 6800, "jute": 5100,
+    "pigeonpeas": 7100, "blackgram": 6900, "mothbeans": 5800,
     "watermelon": 1500, "cucumber": 2000, "muskmelon": 2500, "moong": 7400,
+    "banana": 2800, "mango": 4500, "papaya": 2200, "pomegranate": 7500,
+    "orange": 4200, "grapes": 5500, "coconut": 3200, "coffee": 18500,
 }
 
 DEMO_EMAIL = os.getenv("DEMO_EMAIL", "demo@agrisense.ai")
@@ -177,6 +287,12 @@ def _seed_demo_user(db: Session) -> None:
                 farm_size=2.5, location="Baragaon, Varanasi", status="ACTIVE",
             ),
             FarmerCrop(
+                user_id=demo.id, crop_id="rice", season="KHARIF",
+                planting_date=today - timedelta(days=35),
+                expected_harvest_date=today + timedelta(days=80),
+                farm_size=2.0, location="Baragaon, Varanasi", status="ACTIVE",
+            ),
+            FarmerCrop(
                 user_id=demo.id, crop_id="potato", season="RABI",
                 planting_date=today - timedelta(days=60),
                 expected_harvest_date=today + timedelta(days=20),
@@ -224,6 +340,9 @@ def _seed_demo_user(db: Session) -> None:
         ("f1000d", "Meera Singh", "watermelon", 120, 1450, "B", "Lucknow, Uttar Pradesh"),
         ("f1000e", "Arjun Reddy", "muskmelon", 80, 2600, "A", "Pune, Maharashtra"),
         ("f1000f", "Kisan Yadav", "potato", 200, 1200, "C", "Agra, Uttar Pradesh"),
+        ("f1000g", "Gurpreet Singh", "rice", 150, 2350, "A", "Karnal, Haryana"),
+        ("f1000h", "Balwinder Kaur", "maize", 90, 2180, "B", "Ludhiana, Punjab"),
+        ("f1000i", "Devendra Sharma", "cotton", 45, 6950, "A", "Rajkot, Gujarat"),
     ]
     for farmer_id, farmer_name, crop_id, qty, price, grade, location in other_listings:
         db.add(
@@ -244,11 +363,16 @@ def _seed_demo_user(db: Session) -> None:
 
 
 def seed(db: Session) -> None:
-    if db.scalar(select(Crop).limit(1)) is None:
-        db.add_all([Crop(**crop) for crop in CROPS])
+    existing_crop_ids = set(db.scalars(select(Crop.id)).all())
+    new_crops = [Crop(**crop) for crop in CROPS if crop["id"] not in existing_crop_ids]
+    if new_crops:
+        db.add_all(new_crops)
         db.commit()
-    if db.scalar(select(Market).limit(1)) is None:
-        db.add_all([Market(**market) for market in MARKETS])
+
+    existing_market_ids = set(db.scalars(select(Market.id)).all())
+    new_markets = [Market(**market) for market in MARKETS if market["id"] not in existing_market_ids]
+    if new_markets:
+        db.add_all(new_markets)
         db.commit()
 
     crop_ids = [c.id for c in db.scalars(select(Crop))]

@@ -69,5 +69,5 @@ def test_market_trend_is_rule_computed(client):
 
 
 def test_unknown_crop_404(client):
-    assert client.get(f"{API}/prices/banana").status_code == 404
-    assert client.get(f"{API}/trends/banana").status_code == 404
+    assert client.get(f"{API}/prices/dragonfruit").status_code == 404
+    assert client.get(f"{API}/trends/dragonfruit").status_code == 404

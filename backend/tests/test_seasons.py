@@ -6,7 +6,7 @@ API = "/api/v1/seasons"
 def test_list_seasons(client):
     seasons = client.get(API).json()
     ids = {s["id"] for s in seasons}
-    assert {"rabi", "zaid"} <= ids
+    assert {"rabi", "kharif", "zaid"} <= ids
     assert all("name" in s and "label" in s for s in seasons)
 
 
@@ -15,9 +15,13 @@ def test_season_detail(client):
     assert rabi["id"] == "rabi"
     assert rabi["name"] == "Rabi"
 
+    kharif = client.get(f"{API}/kharif").json()
+    assert kharif["id"] == "kharif"
+    assert "Kharif" in kharif["name"]
+
 
 def test_unknown_season_404(client):
-    assert client.get(f"{API}/kharif").status_code == 404
+    assert client.get(f"{API}/monsoon-extra").status_code == 404
 
 
 def test_season_crops(client):
@@ -26,6 +30,9 @@ def test_season_crops(client):
     crop_ids = {c["id"] for c in body["crops"]}
     assert {"wheat", "chickpea", "mustard", "potato"} <= crop_ids
     assert all(c["season"] == "RABI" for c in body["crops"])
+
+    kharif = client.get(f"{API}/kharif/crops").json()
+    assert {"rice", "maize", "cotton", "pigeonpeas"} <= {c["id"] for c in kharif["crops"]}
 
     zaid = client.get(f"{API}/zaid/crops").json()
     assert {"watermelon", "cucumber", "muskmelon", "moong"} <= {c["id"] for c in zaid["crops"]}

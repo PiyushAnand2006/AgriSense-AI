@@ -34,15 +34,15 @@ export function GradeBadge({ grade }: { grade: string }) {
 }
 
 export function SeasonBadge({ season }: { season: string }) {
-  const isRabi = season === "RABI";
+  const norm = season.toUpperCase();
+  const style =
+    norm === "RABI"
+      ? "bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-200"
+      : norm === "KHARIF"
+        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200"
+        : "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200";
   return (
-    <span
-      className={`chip ${
-        isRabi
-          ? "bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-200"
-          : "bg-accent-100 text-accent-800 dark:bg-accent-900/50 dark:text-accent-200"
-      }`}
-    >
+    <span className={`chip ${style}`}>
       {season}
     </span>
   );

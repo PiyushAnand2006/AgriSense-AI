@@ -6,15 +6,17 @@ API = "/api/v1/crops"
 def test_catalog_lists_all_season_crops(client):
     crops = client.get(API).json()
     ids = {c["id"] for c in crops}
-    assert {"wheat", "chickpea", "mustard", "potato", "watermelon", "cucumber", "muskmelon", "moong"} <= ids
-    assert all(c["season"] in ("RABI", "ZAID") for c in crops)
+    assert {"wheat", "chickpea", "mustard", "potato", "rice", "maize", "watermelon", "cucumber", "muskmelon", "moong"} <= ids
+    assert all(c["season"] in ("RABI", "KHARIF", "ZAID") for c in crops)
 
 
 def test_season_filter(client):
     rabi = client.get(API, params={"season": "RABI"}).json()
+    kharif = client.get(API, params={"season": "KHARIF"}).json()
     zaid = client.get(API, params={"season": "ZAID"}).json()
-    assert {c["id"] for c in rabi} == {"wheat", "chickpea", "mustard", "potato"}
-    assert {c["id"] for c in zaid} == {"watermelon", "cucumber", "muskmelon", "moong"}
+    assert {"wheat", "chickpea", "mustard", "potato"} <= {c["id"] for c in rabi}
+    assert {"rice", "maize", "cotton", "pigeonpeas"} <= {c["id"] for c in kharif}
+    assert {"watermelon", "cucumber", "muskmelon", "moong"} <= {c["id"] for c in zaid}
 
 
 def test_farmer_crop_crud(client, auth):
@@ -55,7 +57,7 @@ def test_farmer_crop_crud(client, auth):
 
 
 def test_create_with_unknown_crop_fails(client, auth):
-    response = client.post(API, json={"cropId": "banana"}, headers=auth["headers"])
+    response = client.post(API, json={"cropId": "dragonfruit"}, headers=auth["headers"])
     assert response.status_code == 400
 
 
