@@ -17,9 +17,16 @@
 
 ## 📖 About The Project
 
-**AgriSense AI** is a production-grade agricultural intelligence and decision-support platform engineered for Indian farmers. It combines **Machine Learning crop recommendation** across 22 distinct crops, normalized mandi (market) price intelligence with historical price trends, live real-time weather forecasts with agro-advisories, interactive place search and GPS geolocation, educational disease/pest management, fertilizer guidance, a farmer marketplace, and transparent sell-or-hold decision support.
+**AgriSense AI** is a production-grade agricultural intelligence and decision-support platform engineered for Indian farmers. It combines:
+- **Machine Learning Crop Recommendation:** Recommends the optimal crop out of **22 Indian crops** using a tuned Support Vector Machine (SVM) model evaluated on a 50,000-sample unseen stress-test suite.
+- **Two-Stage Partitioned Fertilizer Advisor:** Delivers both **API-Based Rule Guidance** (stage- and soil-specific nutrient advice) and **ML-Based Fertilizer Prediction** (tuned XGBoost classifier predicting commercial formulations like Urea, DAP, and 17-17-17 from 39 features).
+- **Three-Season Crop Intelligence:** Full operational classification for **Rabi (Winter)**, **Kharif (Monsoon / Rainy)**, and **Zaid (Summer)** crops.
+- **Mandi Price Intelligence:** Normalized mandi prices, 120-day historical trends, and transparent sell-or-hold economic decision support.
+- **Live Weather & Geolocation:** High-resolution Open-Meteo forecasts, agro-meteorological alerts, and interactive city search with GPS auto-detection.
+- **Crop Health & Field Scouting:** Authentic agronomic knowledge base (diseases, pests, bio-treatments, prevention) across all 22 crops, plus farmer observation logging.
+- **Farmer Marketplace & Assistant:** Community produce marketplace and an AI farming assistant.
 
-The backend acts as the central API orchestration layer, owning the database (PostgreSQL on Supabase with Row Level Security), running Scikit-Learn ML inference pipelines, integrating external APIs (Open-Meteo ECMWF/GFS weather, mandi prices, assistant), and serving a standardized REST contract to the bilingual (English & Hindi) React frontend.
+The backend acts as the central API orchestration layer, owning the database (PostgreSQL on Supabase with Row Level Security), running Scikit-Learn and XGBoost ML inference pipelines, integrating external APIs, and serving a standardized REST contract to the bilingual (English & Hindi) React frontend.
 
 ![Landing page](docs/screenshots/landing.png)
 
@@ -30,6 +37,8 @@ The backend acts as the central API orchestration layer, owning the database (Po
 - [📖 About The Project](#-about-the-project)
 - [🌟 Key Features](#-key-features)
 - [🤖 Machine Learning Architecture](#-machine-learning-architecture)
+- [🧪 Two-Stage Fertilizer Advisor & Prediction](#-two-stage-fertilizer-advisor--prediction-architecture)
+- [🧠 Key Workflows](#-key-workflows)
 - [📸 Interface Tour](#-interface-tour)
 - [🏛️ System Architecture](#-system-architecture)
 - [🛠️ Technology Stack](#-technology-stack)
@@ -37,7 +46,6 @@ The backend acts as the central API orchestration layer, owning the database (Po
 - [🚀 How to Run Locally](#-how-to-run-locally)
 - [⚙️ Environment Variables](#-environment-variables)
 - [📡 API Overview](#-api-overview)
-- [🧠 Key Workflows](#-key-workflows)
 - [🗄️ Database Schema & Security](#-database-schema--security)
 - [🧪 Testing](#-testing)
 - [⚠️ Disclaimers](#-disclaimers)
@@ -48,17 +56,17 @@ The backend acts as the central API orchestration layer, owning the database (Po
 
 | Capability | Description |
 |---|---|
-| **🤖 ML Crop Recommendation** | Tuned **Support Vector Machine (SVM)** model predicting the most suitable crop out of **22 Indian crops** based on 7 soil & environmental parameters with confidence scoring and optimal growing requirements. |
-| **🌾 Season & Crop Catalog** | Database-driven catalog covering **Rabi** (wheat, chickpea, mustard, potato) and **Zaid/summer** (watermelon, cucumber, muskmelon, moong) crops with growing calendars. |
-| **📈 Mandi Price Intelligence** | Normalized mandi price board (min / max / modal per quintal), 90-day history, and rule-computed 7/14/30-day trends across major Indian markets. |
-| **⚖️ Sell or Hold Decision Engine** | Transparent rule engine comparing market trends against warehouse storage costs to output clearly reasoned recommendations. |
-| **🌦️ Live Weather & Geocoding Search** | Real-time weather via Open-Meteo (ECMWF/GFS models), interactive city search bar with autocomplete, GPS one-click location detection, and agricultural risk alerts. |
-| **🩺 Crop Health & Field Records** | Educational disease & pest database with symptoms, organic alternatives, and prevention. Farmers can log and delete field observations with severity and photos. |
-| **🧪 Fertilizer Guidance** | Rule-based, stage- and soil-aware nutrient recommendations for balanced NPK application. |
-| **🛒 Farmer Marketplace** | Community trade board with crop listings, unit pricing, search, location filters, and ownership controls. |
-| **💬 Farmer Assistant** | Chat interface backed by an agricultural knowledge engine with conversational fallback support. |
-| **📊 Aggregated Dashboard** | Unified dashboard combining crop records, market movements, weather forecasts, and notification feeds with graceful degradation. |
-| **🌐 Bilingual Support** | Native, full-interface localization in both **English** and **Hindi (हिंदी)**. |
+| **🤖 ML Crop Recommendation** | Tuned **Support Vector Machine (SVM)** model predicting the most suitable crop out of **22 Indian crops** based on 7 soil & environmental parameters with calibrated confidence scoring and optimal growing requirements. |
+| **🧪 Two-Stage Fertilizer Advisor** | Dual partitioned workflows: **API-Based Recommendation** (stage- & soil-aware guidance) and **ML-Based Prediction** (XGBoost classifier predicting commercial formulations like Urea, DAP, 17-17-17). |
+| **🌾 Three-Season Crop Catalog** | Dynamic platform-wide classification across **Rabi** (wheat, mustard, chickpea, potato, lentil, apple), **Kharif** (rice, maize, cotton, jute, pigeonpeas, blackgram, mothbeans), and **Zaid** (watermelon, cucumber, muskmelon, moong, banana, mango, etc.). |
+| **📈 Mandi Price Intelligence** | Normalized mandi price board (min / max / modal per quintal), 120-day deterministic histories, and computed 7/14/30-day trends across 8 major Indian markets. |
+| **⚖️ Sell or Hold Decision Engine** | Mathematical decision engine evaluating market trend trajectories against cold storage costs to recommend whether waiting or selling immediately yields higher net profit. |
+| **🌦️ Live Weather & Geocoding Search** | Real-time weather via Open-Meteo (ECMWF/GFS models), interactive city search bar with autocomplete, GPS one-click location detection, and agricultural risk alerts for spraying/irrigation. |
+| **🩺 Crop Health & Field Scouting** | Agronomic knowledge base cataloging symptoms, biological alternatives, and prevention protocols for all 22 crops. Includes field scouting observation logging with severity tags and photos. |
+| **🛒 Farmer Marketplace** | Community trade board enabling direct farmer-to-buyer listings with produce quality grades, asking prices, unit metrics, and location search. |
+| **💬 Bilingual Farmer Assistant** | Chat interface backed by an agricultural knowledge engine and LLM fallback to answer agronomic queries in plain English and Hindi. |
+| **📊 Unified Dashboard** | Aggregated dashboard combining seasonal crop calendars, market price tickers, live weather cards, and field alerts with graceful degradation. |
+| **🌐 Complete Bilingual Localization** | First-class, zero-dependency bilingual localization supporting both **English** and **Hindi (हिंदी)** across every screen, badge, modal, and alert. |
 
 ---
 
@@ -112,6 +120,118 @@ $$\vec{x} = \big[ N, P, K, \text{Temperature (°C)}, \text{Humidity (\%), pH, Ra
 - **Numerically Stable Softmax:** Computes calibrated probabilities over one-vs-rest hyperplanes using $z_i = \text{decision\_function}(\vec{x})_i$ with $z_{\max}$ offset subtraction to prevent floating-point overflow.
 - **Lazy Loading Singleton:** Packaged within `backend/app/ml_models/SVM_tunned_model.pkl` and loaded on-demand to ensure fast Docker container cold-starts and low memory footprints.
 - **Agronomic Requirements Mapping:** Enriches predictions with standard N-P-K nutrient targets, climate tolerances, growing seasons, and soil requirements.
+
+---
+
+## 🧪 Two-Stage Fertilizer Advisor & Prediction Architecture
+
+The Fertilizer Advisor provides two clearly partitioned, user-selectable mechanisms to suit different farming workflows:
+
+```
+                                  FERTILIZER ADVISOR
+                                           │
+                ┌──────────────────────────┴──────────────────────────┐
+                ▼                                                     ▼
+    ┌───────────────────────────┐                         ┌───────────────────────────┐
+    │ 🌿 API-Based Recommendation│                         │   🤖 ML-Based Prediction  │
+    │         (Default)         │                         │     (XGBoost Classifier)  │
+    ├───────────────────────────┤                         ├───────────────────────────┤
+    │ • Crop (Rabi/Kharif/Zaid) │                         │ • Crop (Filtered by season│
+    │ • Growth Stage            │                         │ • Season (Kharif/Rabi/Zaid│
+    │ • Soil Condition          │                         │ • Soil Type (5 classes)   │
+    │ • Soil Test Notes (NPK)   │                         │ • N, P, K Nutrient Levels │
+    │                           │                         │ • Temp, Humidity, Moisture│
+    ├───────────────────────────┤                         ├───────────────────────────┤
+    │          Output:          │                         │          Output:          │
+    │ Agronomic Guidance &      │                         │ Predicted Formulation     │
+    │ Application Timing        │                         │ (Urea, DAP, 17-17-17, etc)│
+    │ (Rule / Knowledge-based)  │                         │ + Calibrated Confidence % │
+    └───────────────────────────┘                         └───────────────────────────┘
+```
+
+1. **API-Based Recommendation (Knowledge / Rule-Driven):**
+   - **Methodology:** Domain-driven agronomic knowledge mapping growth stages (sowing, vegetative, flowering, grain filling) and soil conditions to category recommendations and split-application timing.
+   - **Endpoint:** `POST /api/v1/fertilizer-guidance`
+
+2. **ML-Based Fertilizer Prediction (Data-Driven XGBoost):**
+   - **Methodology:** Multi-class extreme gradient boosting classifier (`XGBClassifier`, 300 estimators, max depth 5, learning rate 0.2) trained on 39 one-hot encoded and numerical features.
+   - **Target Formulations:** `Urea` (46-0-0), `DAP` (18-46-0), `17-17-17`, `10-26-26`, `14-35-14`, `20-20` (+13% S), `28-28`.
+   - **Endpoint:** `POST /api/v1/fertilizer/ml-predict`
+
+---
+
+## 🧠 Key Workflows
+
+```mermaid
+flowchart TD
+    subgraph S1["1. Seasonal Context Switching"]
+        Switch["Farmer selects Season: Rabi / Kharif / Zaid"]
+        Context["CropContext broadcast via React Context & LocalStorage"]
+        Views["Dashboard, Health, Fertilizer, and Market dynamically adapt"]
+        Switch --> Context --> Views
+    end
+
+    subgraph S2["2. ML Crop Recommendation"]
+        InputCrop["Soil Nutrients (N, P, K, pH) + Climate (Temp, Humidity, Rain)"]
+        SVM["Tuned SVM (RBF Kernel, C=10.0) with Decision-Margin Softmax"]
+        OutputCrop["Top-1 Crop Recommendation + Confidence + Agronomic Diagnostics"]
+        InputCrop --> SVM --> OutputCrop
+    end
+
+    subgraph S3["3. Partitioned Fertilizer Advisor"]
+        direction TB
+        Choice{"Select Advisory Mode"}
+        Choice -->|API-Based| RuleEngine["Rule Knowledge Base: Growth Stage + Soil Condition"]
+        Choice -->|ML-Based| XGB["XGBoost 39-Feature Classifier (xgb_tunned_model.pkl)"]
+        RuleEngine --> RuleOut["Targeted Guidance, NPK Timing & Split Schedule"]
+        XGB --> MLOut["Commercial Formulation (Urea, DAP, 17-17-17, etc.) + Confidence %"]
+    end
+
+    subgraph S4["4. Sell or Hold Decision Support"]
+        MandiData["120-Day Mandi Price Series + 7/14/30-Day Trend Calculation"]
+        Storage["Storage Cost Simulation: Days × Cost/Quintal × Quantity"]
+        Verdict["Decision Output: Expected Return, Risk Level & Actionable Rationale"]
+        MandiData & Storage --> Verdict
+    end
+
+    subgraph S5["5. Crop Health & Field Scouting"]
+        Scout["Farmer logs in-field observation: Disease, Severity & Photo"]
+        KB["22-Crop Agronomic Catalog: Symptoms, Bio-Treatments & Prevention"]
+        Records["Encrypted Observation History + Direct Image Serving"]
+        Scout & KB --> Records
+    end
+```
+
+### Detailed Workflow Walkthroughs:
+
+#### 🌾 1. Global Season & Crop Adaptive Navigation
+- The farmer selects **Rabi**, **Kharif**, or **Zaid** from the responsive header or sidebar switcher.
+- State is preserved in `CropContext` and cached locally.
+- Crop catalogs across the **Dashboard**, **My Crops**, **Crop Health**, and **Fertilizer Advisor** reactively synchronize with the chosen season.
+
+#### 🤖 2. Machine Learning Crop Suitability Recommendation
+- Farmer provides 7 soil and climatic factors ($N, P, K$, Temperature, Humidity, pH, Rainfall).
+- The FastAPI backend validates input ranges and invokes `MLCropRecommender`.
+- Evaluates the inputs against the tuned **Support Vector Classifier (RBF kernel, $C=10.0$)**, computing decision-function margins normalized via numerically stable softmax.
+- Returns the primary recommended crop, calibrated confidence percentage, top 3 viable alternative crops, and optimal range comparison diagnostics.
+
+#### 🧪 3. Two-Stage Partitioned Fertilizer Advisory
+- **Mode 1 — API-Based Recommendation (Default):**
+  - Farmer chooses crop, vegetative growth stage (`Sowing`, `Vegetative`, `Flowering`, `Grain Filling`), and soil condition.
+  - Returns verified agricultural advisory detailing the recommended fertilizer category, timing, and split applications.
+- **Mode 2 — ML-Based Fertilizer Prediction:**
+  - Farmer selects Season (which dynamically filters the Crop dropdown), Soil Type (`Black`, `Clayey`, `Loamy`, `Red`, `Sandy`), NPK levels, Temperature, Humidity, and Moisture.
+  - The backend pipeline one-hot encodes categorical dimensions into the exact 39-feature matrix expected by `xgb_tunned_model.pkl`.
+  - Returns the predicted commercial formulation (`Urea`, `DAP`, `17-17-17`, `10-26-26`, `14-35-14`, `20-20`, `28-28`), confidence score, input parameter summary pill tag, agronomic purpose, and class probability distribution.
+
+#### 📈 4. Mandi Price Tracking & Sell-or-Hold Decision Engine
+- Normalizes daily modal, minimum, and maximum prices per quintal across 8 major APMC mandis for all crops.
+- Computes 7-day, 14-day, and 30-day directional trends and price velocity.
+- The **Sell vs. Hold Engine** allows farmers to input harvest quantity, planned storage duration, and monthly warehouse costs to determine whether price appreciation will exceed carrying costs.
+
+#### 🩺 5. Crop Health Diagnostics & Field Scouting Records
+- Browse educational symptoms, chemical management, organic alternatives, and prevention protocols for all 22 crops.
+- Farmers can log field scouting observations with photo evidence (verified via client-side preview and server-side magic-byte sniffing) and track infestation severity over time.
 
 ---
 
@@ -192,7 +312,7 @@ flowchart TD
 |---|---|
 | **Frontend** | React 18, TypeScript 5.5, Vite 5.4, Tailwind CSS 3.4, React Router 6, Recharts, Marked, DOMPurify |
 | **Backend** | Python 3.11, FastAPI, Pydantic v2, SQLAlchemy 2.0, Uvicorn, httpx (async HTTP client) |
-| **Machine Learning** | Scikit-Learn (SVM RBF), NumPy, Joblib |
+| **Machine Learning** | Scikit-Learn (SVM RBF), XGBoost (XGBClassifier), NumPy, Pandas, Joblib |
 | **Database** | PostgreSQL 16 on Supabase (with Row Level Security) / SQLite fallback |
 | **Caching** | Redis 7 / In-memory process-local TTL cache fallback |
 | **Security & Auth** | JWT (HS256) with Passlib & Bcrypt, Supabase RLS, rate limiting, magic-byte upload validation |
@@ -213,27 +333,28 @@ AgriSense-AI/
 |   |   |-- config/            API base URL, backend origin
 |   |   |-- hooks/             data fetching, debounce, online status
 |   |   |-- i18n/              English + Hindi dictionaries
-|   |   |-- pages/             13 application pages (Crop Recommendation, Weather, Health, etc.)
+|   |   |-- pages/             application pages (Crop Recommendation, Fertilizer, Health, etc.)
 |   |   |-- services/          typed API service modules (single fetch client)
-|   |   |-- store/             crop selection, notifications, theme contexts
+|   |   |-- store/             crop selection (Rabi/Kharif/Zaid), notifications, theme contexts
 |   |   |-- types/             API contract types mirroring backend schemas
 |   |   `-- utils/             formatting, image resolution, markdown
 |-- backend/
 |   |-- app/
-|   |   |-- api/v1/            REST routers (versioned: crops, weather, recommendation, etc.)
+|   |   |-- api/v1/            REST routers (versioned: crops, fertilizer, weather, etc.)
 |   |   |-- core/              config, security, cache, errors
-|   |   |-- db/                engine, session, idempotent seeding
+|   |   |-- db/                engine, session, idempotent seeding (25 crops, 8 mandis)
 |   |   |-- external/          weather, mandi and assistant clients
 |   |   |-- middleware/        request context, rate limiting
-|   |   |-- ml_models/         packaged trained SVM model binary (SVM_tunned_model.pkl)
+|   |   |-- ml_models/         trained model binaries (SVM_tunned_model.pkl, xgb_tunned_model.pkl)
 |   |   |-- models/            SQLAlchemy ORM models
-|   |   |-- schemas/           Pydantic request/response schemas
-|   |   `-- services/          ML crop service, weather service, market service
-|   |-- tests/                 83 automated pytest test cases (100% pass)
+|   |   |-- schemas/           Pydantic request/response schemas (ml_fertilizer, crop_rec, etc.)
+|   |   `-- services/          ML crop service, ML fertilizer service, weather, market, knowledge
+|   |-- tests/                 94 automated pytest test cases (100% pass)
 |   |-- Dockerfile             production container configuration
-|   `-- requirements.txt       backend dependencies
+|   `-- requirements.txt       backend dependencies (including scikit-learn & xgboost)
 |-- datasets/
-|   `-- crop recommendation/   evaluation notebooks and datasets (2.2k and 50k stress-test)
+|   |-- crop recommendation/   evaluation notebooks and datasets (2.2k and 50k stress-test)
+|   `-- Fertilizer prediction/ training notebooks, datasets, and serialized XGBoost model
 |-- render.yaml                Render deployment blueprint
 |-- docker-compose.yml         postgres + redis + backend + frontend
 |-- .env.example               environment variable template
@@ -310,13 +431,13 @@ All endpoints are versioned under `/api/v1`. Interactive OpenAPI documentation i
 
 | Area | Endpoints |
 |---|---|
-| **Crop Recommendation (ML)** | `POST /api/v1/crop-recommendation/predict` (22 crops, SVM RBF model) |
+| **Crop Recommendation (ML)** | `POST /api/v1/crop-recommendation/predict` (22 crops, SVM RBF model), `GET /crop-recommendation/model-info`, `GET /crop-recommendation/presets` |
+| **Fertilizer Advisor (Dual Mode)** | • Rule Guidance: `POST /fertilizer-guidance`<br>• ML Prediction: `POST /fertilizer/ml-predict` (XGBoost 39-feature model)<br>• ML Metadata & Presets: `GET /fertilizer/ml-info`, `GET /fertilizer/ml-presets` |
 | **System & Health** | `GET /api/v1/system`; `GET /health`, `GET /health/live`, `GET /health/ready` |
 | **Authentication** | `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `PATCH /auth/me` |
-| **Seasons & Crops** | `GET /seasons`, `GET/POST /crops`, `GET/PATCH/DELETE /crops/{id}`, `GET/POST/DELETE /crops/{crop_id}/records` |
-| **Knowledge Base** | `GET /diseases`, `GET /pests`, `GET /treatments`, `GET /fertilizers` |
-| **Fertilizer Guidance** | `POST /fertilizer-guidance` (soil & stage-aware) |
-| **Market Intelligence** | `GET /market/markets`, `GET /market/prices`, `GET /market/trends/{cropId}` |
+| **Seasons & Crops** | `GET /seasons`, `GET /seasons/{season}/crops`, `GET/POST /crops`, `GET/PATCH/DELETE /crops/{id}`, `GET/POST/DELETE /crops/{crop_id}/records` |
+| **Knowledge Base** | `GET /diseases`, `GET /pests`, `GET /treatments`, `GET /fertilizers` (22 crops covered) |
+| **Market Intelligence** | `GET /market/markets`, `GET /market/prices`, `GET /market/trends/{cropId}` (120-day historical series) |
 | **Weather** | `GET /weather/current`, `GET /weather/forecast`, `GET /weather/location` |
 | **Decisions** | `POST /recommendations/sell-hold`, `GET /recommendations/history` |
 | **Dashboard** | `GET /dashboard` (single aggregated response) |
@@ -335,10 +456,10 @@ All 13 public tables are protected with **Supabase Row Level Security (RLS)**, e
 |---|---|---|
 | `users` | User accounts with bcrypt-hashed credentials | Protected with RLS |
 | `farmer_profiles` | Village, district, state, farm size in acres | One-to-one with `users` |
-| `crops` | Catalog: season, growing period, sowing and harvest windows | Reference catalog |
+| `crops` | Catalog: season (Rabi, Kharif, Zaid), growing period, sowing and harvest windows | Reference catalog (25 crops) |
 | `farmer_crops` | User-planted crops and harvest dates | Scoped to authenticated user |
 | `health_records` | Field observations: disease/pest, severity, photo URL | User-owned with delete support |
-| `markets` & `market_prices` | Mandi reference data and daily price records | Reference data |
+| `markets` & `market_prices` | Mandi reference data and 120-day price records across 8 mandis | Reference data |
 | `sell_hold_recommendations` | Decision outputs with storage cost and expected return | Scoped to user and crop |
 | `crop_listings` | Marketplace trade listings with contact info | User-owned trade listings |
 | `assistant_conversations` & `messages`| Farmer assistant conversational history | Scoped to authenticated user |
@@ -349,7 +470,7 @@ All 13 public tables are protected with **Supabase Row Level Security (RLS)**, e
 ## 🧪 Testing
 
 ```bash
-# Run backend pytest suite (83 tests, 100% pass)
+# Run backend pytest suite (94 tests, 100% pass)
 cd backend
 pytest tests/ -v
 

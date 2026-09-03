@@ -1,10 +1,19 @@
-"""Fertilizer information + guidance endpoints (rule-based).
+"""Fertilizer information + guidance endpoints.
 
-- GET  /fertilizers                 fertilizer category catalog
-- GET  /fertilizers/{id}            catalog detail
-- GET  /crops/{crop_id}/fertilizers crop-scoped catalog (crops router)
-- POST /fertilizer-guidance         validated rule-based guidance
+Two Partitioned Approaches:
+1. API-Based Recommendation:
+   - GET  /fertilizers                 fertilizer category catalog
+   - GET  /fertilizers/{id}            catalog detail
+   - POST /fertilizer-guidance         validated rule-based guidance
+
+2. ML-Based Fertilizer Prediction:
+   - POST /fertilizer/ml-predict       XGBoost ML-driven fertilizer classification
+   - POST /fertilizers/ml-predict      Alias route for ML prediction
+   - GET  /fertilizer/ml-info          Model metadata & supported features
+   - GET  /fertilizer/ml-presets       Curated preset scenarios for rapid testing
 """
+
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -18,15 +27,27 @@ from app.schemas.fertilizer import (
     FertilizerGuidanceResult,
     FertilizerInfoOut,
 )
+from app.schemas.ml_fertilizer import (
+    FertilizerPresetItem,
+    MLFertilizerModelInfoResponse,
+    MLFertilizerPredictionRequest,
+    MLFertilizerPredictionResponse,
+)
 from app.services.knowledge import get_fertilizer, get_fertilizer_guidance, list_fertilizers
+from app.services.ml_fertilizer_service import ml_fertilizer_predictor
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/fertilizers", tags=["fertilizers"])
-
 guidance_router = APIRouter(prefix="/fertilizer-guidance", tags=["fertilizers"])
+ml_router = APIRouter(prefix="/fertilizer", tags=["fertilizers"])
 
 
 def _info_out(entry: dict) -> FertilizerInfoOut:
     return FertilizerInfoOut.model_validate(entry)
+
+
+# --- 1. API / Rule-Based Catalog Endpoints ---
 
 
 @router.get("", response_model=list[FertilizerInfoOut])
@@ -67,3 +88,48 @@ def fertilizer_guidance(
         soil_note=guidance["soil_note"],
         guidance=guidance["guidance"],
     )
+
+
+# --- 2. ML-Based Fertilizer Prediction Endpoints ---
+
+
+def _run_ml_prediction(payload: MLFertilizerPredictionRequest) -> MLFertilizerPredictionResponse:
+    try:
+        return ml_fertilizer_predictor.predict(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    except RuntimeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        logger.exception("Unexpected error during ML fertilizer prediction: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred during fertilizer ML inference.",
+        )
+
+
+@ml_router.post("/ml-predict", response_model=MLFertilizerPredictionResponse)
+def ml_fertilizer_predict(payload: MLFertilizerPredictionRequest):
+    """Predicts optimal commercial fertilizer formulation using trained XGBoost classifier."""
+    return _run_ml_prediction(payload)
+
+
+@router.post("/ml-predict", response_model=MLFertilizerPredictionResponse)
+def ml_fertilizers_predict_alias(payload: MLFertilizerPredictionRequest):
+    """Alias for /api/v1/fertilizer/ml-predict."""
+    return _run_ml_prediction(payload)
+
+
+@ml_router.get("/ml-info", response_model=MLFertilizerModelInfoResponse)
+def ml_fertilizer_info():
+    """Returns metadata about the trained XGBoost fertilizer classifier."""
+    return ml_fertilizer_predictor.get_model_info()
+
+
+@ml_router.get("/ml-presets", response_model=list[FertilizerPresetItem])
+def ml_fertilizer_presets():
+    """Returns quick test scenarios for the ML fertilizer prediction form."""
+    return ml_fertilizer_predictor.get_presets()

@@ -130,6 +130,73 @@ export interface FertilizerGuidance {
   sourceNote: string;
 }
 
+// --- ML-Based Fertilizer Prediction (XGBoost) --------------------------------
+
+export interface MLFertilizerPredictionRequest {
+  crop: string;
+  season: string;
+  soilType: string;
+  nitrogen: number;
+  phosphorous: number;
+  potassium: number;
+  temperature: number;
+  humidity: number;
+  moisture: number;
+}
+
+export interface FertilizerProbabilityItem {
+  fertilizer: string;
+  probability: number;
+}
+
+export interface FertilizerNutrientProfile {
+  npkRatio: string;
+  primaryFunction: string;
+  applicationAdvice: string;
+}
+
+export interface FertilizerInputSummary {
+  crop: string;
+  season: string;
+  soilType: string;
+  nitrogen: number;
+  phosphorous: number;
+  potassium: number;
+  temperature: number;
+  humidity: number;
+  moisture: number;
+}
+
+export interface MLFertilizerPredictionResponse {
+  status: string;
+  prediction: string;
+  confidence: number;
+  confidencePct: number;
+  profile?: FertilizerNutrientProfile | null;
+  inputSummary?: FertilizerInputSummary | null;
+  probabilities: FertilizerProbabilityItem[];
+  disclaimer: string;
+}
+
+export interface FertilizerPresetItem {
+  id: string;
+  title: string;
+  description: string;
+  values: MLFertilizerPredictionRequest;
+}
+
+export interface MLFertilizerModelInfo {
+  modelName: string;
+  modelType: string;
+  testAccuracy: number;
+  totalClasses: number;
+  classes: string[];
+  features: string[];
+  supportedCrops: Record<string, string[]>;
+  supportedSoils: string[];
+  supportedSeasons: string[];
+}
+
 // --- Farmer-logged health records (observations, not predictions) ---------------
 
 export interface HealthRecord {
