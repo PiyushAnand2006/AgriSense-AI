@@ -8,10 +8,20 @@
 [![REACT](https://img.shields.io/badge/REACT-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![TYPESCRIPT](https://img.shields.io/badge/TYPESCRIPT-5.5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TAILWIND CSS](https://img.shields.io/badge/TAILWIND_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![DEMO VIDEO](https://img.shields.io/badge/DEMO_VIDEO-1080P_NARRATED-E53E3E?style=for-the-badge&logo=youtube&logoColor=white)](#-video-walkthrough--feature-demo)
 
 🚀 **Live Web Application:** [https://agri-sense-ai-nine.vercel.app/](https://agri-sense-ai-nine.vercel.app/)  
 ⚡ **Interactive Swagger API Docs:** [https://agrisense-api-0p24.onrender.com/docs](https://agrisense-api-0p24.onrender.com/docs)  
-🔑 **Demo Account:** `demo@agrisense.ai` | `Demo@1234`
+🔑 **Demo Account:** `demo@agrisense.ai` | `Demo@1234`  
+🎥 **Product Demo Video:** [Watch Walkthrough](#-video-walkthrough--feature-demo) (1m 18s / 1080p HD with Audio Narration)
+
+---
+
+## 🎥 Video Walkthrough & Feature Demo
+
+https://github.com/user-attachments/assets/d1494434-bfe1-41de-b2eb-4a4c54977355
+
+> 🎙️ **Full Narrated Video Walkthrough (1m 18s / 1080p HD):** Comprehensive tour covering all 8 core subsystems, ML crop suitability models, dual-stage fertilizer prediction, mandi price intelligence with sell/hold economics, and bilingual support. Local copy: [`docs/demo/agrisense-demo.mp4`](docs/demo/agrisense-demo.mp4)
 
 ---
 
@@ -34,6 +44,7 @@ The backend acts as the central API orchestration layer, owning the database (Po
 
 ## 📑 Table of Contents
 
+- [🎥 Video Walkthrough & Feature Demo](#-video-walkthrough--feature-demo)
 - [📖 About The Project](#-about-the-project)
 - [🌟 Key Features](#-key-features)
 - [🤖 Machine Learning Architecture](#-machine-learning-architecture)

@@ -1,0 +1,15 @@
+Crop knowledge. Market intelligence. Sell smarter. This is AgriSense AI, an intelligent agricultural platform built for Indian farmers across Rabi, Kharif, and Zaid seasons.
+
+The dashboard adapts dynamically to the growing season, delivering live telemetry on crop health, local weather conditions, and real-time mandi prices.
+
+Our tuned Support Vector Machine analyzes seven soil and climatic parameters, achieving ninety-eight point six percent accuracy across twenty-two Indian crops.
+
+A dual-stage advisor pairs growth-stage agronomic rules with an XGBoost classifier predicting commercial fertilizer formulations like Urea and DAP.
+
+Tracking eight major APMC markets, the mathematical Sell or Hold engine factors cold storage costs against price velocity to maximize farmer profit.
+
+Farmers get disease diagnostics with biological alternatives, photo-verified field scouting, and live weather hazard warnings for spraying.
+
+Cut out middlemen with a direct community marketplace, and get instant answers from our AI assistant in both English and Hindi.
+
+Live, bilingual, and deployed for Indian agriculture. Explore the live platform today at AgriSense AI.

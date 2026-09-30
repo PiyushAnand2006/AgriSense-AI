@@ -1,0 +1,1 @@
+Built AgriSense AI — an end-to-end agricultural intelligence platform for Indian farmers with tuned SVM crop recommendations (98.68% accuracy across 22 crops), two-stage XGBoost fertilizer prediction, live APMC mandi price tracking, and mathematical sell-or-hold decision economics. 100% bilingual in English and Hindi. Live at agri-sense-ai-nine.vercel.app

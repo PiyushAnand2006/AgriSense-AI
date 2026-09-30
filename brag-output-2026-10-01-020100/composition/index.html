@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <title>AgriSense AI — Product Tour</title>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #1c1917;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      color: #292420;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #faf9f7;
+    }
+
+    .clip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* Typography */
+    .font-display {
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Persistent Top Nav Bar */
+    .top-nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      padding: 0 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #e7e5e0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #247b4c, #165b35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(36, 123, 76, 0.25);
+    }
+
+    .nav-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: #edf7ee;
+      color: #247b4c;
+      border: 1px solid #cce8d2;
+    }
+
+    .nav-subsystem {
+      font-size: 15px;
+      font-weight: 600;
+      color: #78716c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-subsystem span.step {
+      background: #292420;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Scene Styles */
+    .scene {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* SCENE 1: HOOK & IDENTITY */
+    #scene-1 {
+      background: radial-gradient(circle at 50% 40%, #292524 0%, #1c1917 100%);
+      color: #faf9f7;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 100px;
+    }
+
+    .hero-logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .hero-logo-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2e9b5f, #1b663b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      box-shadow: 0 10px 30px rgba(46, 155, 95, 0.4);
+    }
+
+    .hero-brand-name {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+
+    .hero-headline {
+      font-size: 82px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      margin-bottom: 36px;
+      max-width: 1400px;
+    }
+
+    .hero-headline .hl-green {
+      color: #4ade80;
+    }
+
+    .hero-headline .hl-amber {
+      color: #fbbf24;
+    }
+
+    .hero-tagline {
+      font-size: 26px;
+      color: #d6d3d1;
+      font-weight: 500;
+      margin-bottom: 50px;
+      letter-spacing: -0.01em;
+    }
+
+    .season-switcher-box {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px;
+      border-radius: 9999px;
+      gap: 12px;
+    }
+
+    .season-pill {
+      padding: 12px 28px;
+      border-radius: 9999px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #a8a29e;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .season-pill.active {
+      background: #247b4c;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(36, 123, 76, 0.5);
+    }
+
+    /* COMMON LAYOUT: SPLIT 2-COLUMN VIEW */
+    .stage-container {
+      position: absolute;
+      top: 105px;
+      left: 60px;
+      right: 60px;
+      bottom: 45px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .stage-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .browser-frame {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #e7e5e0;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .browser-header {
+      height: 42px;
+      background: #f5f4f0;
+      border-bottom: 1px solid #e7e5e0;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+    }
+
+    .browser-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .browser-dot.red {
+      background: #ff5f56;
+    }
+
+    .browser-dot.yellow {
+      background: #ffbd2e;
+    }
+
+    .browser-dot.green {
+      background: #27c93f;
+    }
+
+    .browser-url {
+      margin-left: 16px;
+      background: #ffffff;
+      border: 1px solid #e7e5e0;
+      border-radius: 6px;
+      padding: 3px 14px;
+      font-size: 13px;
+      color: #78716c;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .browser-frame img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* CARDS & UI COMPONENTS */
+    .feature-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #247b4c;
+      background: #e9f6ed;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+      align-self: flex-start;
+    }
+
+    .feature-title {
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: #1c1917;
+      margin-bottom: 16px;
+    }
+
+    .feature-desc {
+      font-size: 20px;
+      color: #57534e;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    /* SCENE 2 DASHBOARD STATS */
+    .stats-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .stat-card-box {
+      background: #ffffff;
+      border: 1px solid #e7e5e0;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #78716c;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1c1917;
+      margin-bottom: 4px;
+    }
+
+    .stat-sub {
+      font-size: 14px;
+      font-weight: 600;
+      color: #247b4c;
+    }
+
+    /* SCENE 3 ML INPUT CHIPS */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .matrix-item {
+      background: #ffffff;
+      border: 1px solid #e7e5e0;
+      padding: 14px;
+      border-radius: 12px;
+    }
+
+    .matrix-k {
+      font-size: 12px;
+      color: #78716c;
+      font-weight: 600;
+    }
+
+    .matrix-v {
+      font-size: 20px;
+      color: #1c1917;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .prediction-card-lead {
+      background: linear-gradient(135deg, #247b4c, #165b35);
+      color: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 16px 36px rgba(36, 123, 76, 0.3);
+    }
+
+    .conf-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 14px 0;
+    }
+
+    .conf-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #4ade80;
+      border-radius: 9999px;
+    }
+
+    /* SCENE 4 FERTILIZER SPLIT */
+    .dual-mode-box {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mode-card {
+      background: #ffffff;
+      border: 1px solid #e7e5e0;
+      border-radius: 16px;
+      padding: 22px;
+      border-left: 6px solid #247b4c;
+    }
+
+    .mode-badge {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #247b4c;
+      background: #edf7ee;
+      padding: 3px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    /* SCENE 5 SELL OR HOLD */
+    .hold-verdict-box {
+      background: #ffffff;
+      border: 2px solid #247b4c;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 14px 40px rgba(36, 123, 76, 0.12);
+    }
+
+    .verdict-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #247b4c;
+      color: white;
+      font-size: 28px;
+      font-weight: 800;
+      padding: 10px 28px;
+      border-radius: 12px;
+      letter-spacing: 0.05em;
+      margin-bottom: 18px;
+    }
+
+    .metric-highlight {
+      font-size: 38px;
+      font-weight: 800;
+      color: #247b4c;
+      margin: 8px 0;
+    }
+
+    /* SCENE 6 HEALTH / SCOUTING */
+    .health-alert-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 14px;
+      padding: 18px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    /* SCENE 7 MARKETPLACE / ASSISTANT */
+    .chat-bubble-sample {
+      background: #ffffff;
+      border: 1px solid #e7e5e0;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .lang-badge-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* SCENE 8 OUTRO */
+    #scene-8 {
+      background: radial-gradient(circle at 50% 45%, #292524 0%, #1c1917 100%);
+      color: white;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .outro-emblem {
+      width: 100px;
+      height: 100px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #2e9b5f, #1b663b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      box-shadow: 0 16px 48px rgba(46, 155, 95, 0.45);
+      margin-bottom: 28px;
+    }
+
+    .outro-title {
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+    }
+
+    .outro-sub {
+      font-size: 26px;
+      color: #d6d3d1;
+      margin-bottom: 44px;
+    }
+
+    .credentials-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      max-width: 1300px;
+      margin-bottom: 48px;
+    }
+
+    .cred-card {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 22px 20px;
+      border-radius: 16px;
+    }
+
+    .cred-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #4ade80;
+      margin-bottom: 6px;
+    }
+
+    .cred-lbl {
+      font-size: 15px;
+      color: #a8a29e;
+      font-weight: 600;
+    }
+
+    .live-url-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: #247b4c;
+      color: white;
+      padding: 18px 44px;
+      border-radius: 9999px;
+      font-size: 24px;
+      font-weight: 700;
+      box-shadow: 0 12px 36px rgba(36, 123, 76, 0.45);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root" data-composition-id="main" data-start="0" data-duration="50" data-width="1920" data-height="1080">
+    <!-- Audio Element -->
+    <audio id="bgm" data-start="0" data-duration="50"
+      src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+
+    <!-- Persistent Top Navigation Bar (Active in scenes 2-7) -->
+    <header id="global-nav" class="top-nav" style="opacity: 0;">
+      <div class="nav-brand font-display">
+        <div class="brand-icon">🌾</div>
+        <span>AgriSense AI</span>
+      </div>
+      <div class="nav-subsystem">
+        <span class="step" id="nav-step-num">MODULE 01</span>
+        <span id="nav-step-title">Farmer Intelligence Platform</span>
+      </div>
+      <div class="nav-badge font-display" id="nav-season-badge">
+        <span>❄️</span> RABI SEASON ACTIVE
+      </div>
+    </header>
+
+    <!-- ==========================================
+           SCENE 1: HOOK & THREE-SEASON IDENTITY (0.0s - 5.5s)
+           ========================================== -->
+    <section id="scene-1" class="scene clip" data-start="0" data-duration="5.5">
+      <div class="hero-logo-lockup" id="s1-logo">
+        <div class="hero-logo-icon">🌾</div>
+        <span class="hero-brand-name font-display">AgriSense AI</span>
+      </div>
+
+      <h1 class="hero-headline font-display">
+        <div id="s1-line-1">Crop knowledge.</div>
+        <div id="s1-line-2" class="hl-green">Market intelligence.</div>
+        <div id="s1-line-3" class="hl-amber">Sell smarter.</div>
+      </h1>
+
+      <p class="hero-tagline font-display" id="s1-tagline">
+        Agricultural intelligence engineered for Indian farmers across every season.
+      </p>
+
+      <div class="season-switcher-box" id="s1-seasons">
+        <div class="season-pill active"><span>❄️</span> Rabi (Winter)</div>
+        <div class="season-pill"><span>🌧</span> Kharif (Rainy)</div>
+        <div class="season-pill"><span>☀️</span> Zaid (Summer)</div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 2: UNIFIED FARMER DASHBOARD (5.5s - 12.0s)
+           ========================================== -->
+    <section id="scene-2" class="scene clip" data-start="5.5" data-duration="6.5">
+      <div class="stage-container">
+        <div class="stage-panel" id="s2-browser">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+              <div class="browser-url">agrisense.ai/dashboard</div>
+            </div>
+            <img src="assets/screenshots/dashboard.png" alt="Farmer Dashboard" />
+          </div>
+        </div>
+
+        <div class="stage-panel" id="s2-info">
+          <div class="feature-tag">Unified Agro-Telemetry</div>
+          <h2 class="feature-title font-display">Season-Adaptive Dashboard</h2>
+          <p class="feature-desc">
+            Synchronizes telemetry across crops, mandis, and weather models with intelligent local caching.
+          </p>
+
+          <div class="stats-grid-4">
+            <div class="stat-card-box s2-card">
+              <div class="stat-label">Current Crop</div>
+              <div class="stat-value font-display">Wheat</div>
+              <div class="stat-sub">Sowing: Oct–Nov</div>
+            </div>
+            <div class="stat-card-box s2-card">
+              <div class="stat-label">Crop Health</div>
+              <div class="stat-value font-display" style="color: #247b4c;">90 / 100</div>
+              <div class="stat-sub">Excellent Condition</div>
+            </div>
+            <div class="stat-card-box s2-card">
+              <div class="stat-label">Mandi Price</div>
+              <div class="stat-value font-display">₹2,394</div>
+              <div class="stat-sub">Azadpur APMC Market</div>
+            </div>
+            <div class="stat-card-box s2-card">
+              <div class="stat-label">Weather Now</div>
+              <div class="stat-value font-display">29.2°C</div>
+              <div class="stat-sub">Rain · 💧 89% Humidity</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 3: ML CROP RECOMMENDATION ENGINE (12.0s - 18.5s)
+           ========================================== -->
+    <section id="scene-3" class="scene clip" data-start="12.0" data-duration="6.5">
+      <div class="stage-container">
+        <div class="stage-panel" id="s3-info">
+          <div class="feature-tag">Core Machine Learning</div>
+          <h2 class="feature-title font-display">Tuned SVM Crop Suitability</h2>
+          <p class="feature-desc">
+            Analyzes 7 soil and climate vectors through stable softmax decision margins across 22 crops.
+          </p>
+
+          <div class="matrix-grid">
+            <div class="matrix-item">
+              <div class="matrix-k">Nitrogen (N)</div>
+              <div class="matrix-v">90 kg/ha</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-k">Phosphorus (P)</div>
+              <div class="matrix-v">42 kg/ha</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-k">Potassium (K)</div>
+              <div class="matrix-v">43 kg/ha</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-k">Soil pH</div>
+              <div class="matrix-v">6.5</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-k">Temperature</div>
+              <div class="matrix-v">20.8°C</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-k">Rainfall</div>
+              <div class="matrix-v">202 mm</div>
+            </div>
+          </div>
+
+          <div class="prediction-card-lead" id="s3-pred-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span
+                style="font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #ffffff;">Top-1
+                Primary Recommendation</span>
+              <span
+                style="font-size: 28px; font-weight: 800; font-family: 'JetBrains Mono'; color: #ffffff;">98.0%</span>
+            </div>
+            <div style="font-size: 38px; font-weight: 800; margin-top: 8px; color: #ffffff;" class="font-display">🌾
+              Wheat (Triticum)</div>
+            <div class="conf-bar-bg">
+              <div class="conf-bar-fill" id="s3-bar-fill"></div>
+            </div>
+            <div style="font-size: 15px; color: #ffffff; font-weight: 500;">
+              Tuned SVM (RBF Kernel, C=10.0) · <strong style="color: #4ade80;">98.68% Accuracy</strong> on 50,000
+              stress-tested samples
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-panel" id="s3-browser">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+              <div class="browser-url">agrisense.ai/crop-recommendation</div>
+            </div>
+            <img src="assets/screenshots/crops.png" alt="Crop Recommendation" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 4: TWO-STAGE PARTITIONED FERTILIZER ADVISOR (18.5s - 25.0s)
+           ========================================== -->
+    <section id="scene-4" class="scene clip" data-start="18.5" data-duration="6.5">
+      <div class="stage-container">
+        <div class="stage-panel" id="s4-browser">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+              <div class="browser-url">agrisense.ai/recommendation</div>
+            </div>
+            <img src="assets/screenshots/recommendation.png" alt="Fertilizer Advisor" />
+          </div>
+        </div>
+
+        <div class="stage-panel" id="s4-info">
+          <div class="feature-tag">Dual-Architecture Engine</div>
+          <h2 class="feature-title font-display">Two-Stage Fertilizer Advisor</h2>
+          <p class="feature-desc">
+            Combines agronomic split-application science with XGBoost formulation predictions.
+          </p>
+
+          <div class="dual-mode-box">
+            <div class="mode-card">
+              <div class="mode-badge">Mode 1 · API Rule-Based Guidance</div>
+              <div style="font-size: 19px; font-weight: 700; color: #1c1917; margin-bottom: 4px;" class="font-display">
+                Growth Stage: Vegetative & Tillering
+              </div>
+              <div style="font-size: 15px; color: #57534e;">
+                Recommends split-dose nitrogen scheduling to avoid leaching and maximize grain development.
+              </div>
+            </div>
+
+            <div class="mode-card" style="border-left-color: #f59e0b;">
+              <div class="mode-badge" style="background: #fef3c7; color: #b45309;">Mode 2 · 39-Feature XGBoost ML</div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <div style="font-size: 22px; font-weight: 800; color: #1c1917;" class="font-display">
+                  Formulation: Urea (46-0-0)
+                </div>
+                <div style="font-size: 18px; font-weight: 800; color: #b45309; font-family: 'JetBrains Mono';">94.2%
+                  Conf.</div>
+              </div>
+              <div style="font-size: 15px; color: #57534e; margin-top: 4px;">
+                Trained on multi-class commercial grades: Urea, DAP, 17-17-17, 10-26-26, 20-20.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 5: MANDI PRICE INTELLIGENCE & SELL/HOLD (25.0s - 32.0s)
+           ========================================== -->
+    <section id="scene-5" class="scene clip" data-start="25.0" data-duration="7.0">
+      <div class="stage-container">
+        <div class="stage-panel" id="s5-info">
+          <div class="feature-tag">Market Economics</div>
+          <h2 class="feature-title font-display">Mandi Intelligence & Sell/Hold</h2>
+          <p class="feature-desc">
+            Calculates carrying costs against price trajectories across 8 major APMC markets.
+          </p>
+
+          <div class="hold-verdict-box" id="s5-verdict">
+            <div class="verdict-badge font-display">
+              <span>⚖️</span> VERDICT: HOLD HARVEST
+            </div>
+            <div style="font-size: 16px; color: #78716c; font-weight: 600;">Expected Net Profit Increase</div>
+            <div class="metric-highlight font-display">+₹240 / quintal</div>
+            <div style="font-size: 16px; color: #44403c; line-height: 1.5; margin-top: 10px;">
+              Storage simulation: 30 days @ ₹40/q storage cost. 120-day historical trend indicates ₹280/q price
+              appreciation.
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 14px;">
+              <span
+                style="background: #edf7ee; color: #247b4c; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 6px;">Risk
+                Level: LOW</span>
+              <span
+                style="background: #edf7ee; color: #247b4c; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 6px;">APMC:
+                Azadpur Mandi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-panel" id="s5-browser">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+              <div class="browser-url">agrisense.ai/market</div>
+            </div>
+            <img src="assets/screenshots/market.png" alt="Mandi Prices & Trends" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 6: CROP HEALTH DIAGNOSTICS & FIELD SCOUTING (32.0s - 38.5s)
+           ========================================== -->
+    <section id="scene-6" class="scene clip" data-start="32.0" data-duration="6.5">
+      <div class="stage-container">
+        <div class="stage-panel" id="s6-browser">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+              <div class="browser-url">agrisense.ai/health</div>
+            </div>
+            <img src="assets/screenshots/health.png" alt="Crop Health Catalog" />
+          </div>
+        </div>
+
+        <div class="stage-panel" id="s6-info">
+          <div class="feature-tag">Field Protection</div>
+          <h2 class="feature-title font-display">Crop Health & Field Scouting</h2>
+          <p class="feature-desc">
+            Comprehensive agronomic encyclopedia across 22 crops, with photo scouting logs and weather alerts.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="stat-card-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-weight: 800; font-size: 18px;" class="font-display">Yellow Rust (Puccinia
+                  striiformis)</span>
+                <span
+                  style="background: #fee2e2; color: #991b1b; font-weight: 800; font-size: 13px; padding: 3px 10px; border-radius: 6px;">Severity:
+                  Moderate</span>
+              </div>
+              <div style="font-size: 14px; color: #57534e;">
+                <strong>Bio-Control:</strong> Foliar application of Trichoderma viride & Neem extract.<br>
+                <strong>Chemical Alternative:</strong> Propiconazole 25% EC @ 1ml/L water.
+              </div>
+            </div>
+
+            <div class="health-alert-box">
+              <span style="font-size: 28px;">🌦</span>
+              <div>
+                <div style="font-weight: 700; font-size: 15px; color: #92400e;">Agro-Meteorological Advisory</div>
+                <div style="font-size: 13px; color: #b45309;">
+                  High humidity (89%) and rain expected. Delay foliar chemical spraying by 48 hours to prevent wash-off.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 7: FARMER MARKETPLACE & BILINGUAL AI ASSISTANT (38.5s - 45.0s)
+           ========================================== -->
+    <section id="scene-7" class="scene clip" data-start="38.5" data-duration="6.5">
+      <div class="stage-container">
+        <div class="stage-panel" id="s7-info">
+          <div class="feature-tag">Community & AI Chat</div>
+          <h2 class="feature-title font-display">Marketplace & Bilingual AI</h2>
+          <p class="feature-desc">
+            Direct farmer-to-buyer listings with zero middlemen, backed by an agronomic AI assistant in English and
+            Hindi.
+          </p>
+
+          <div class="chat-bubble-sample">
+            <div style="font-size: 13px; font-weight: 700; color: #78716c; margin-bottom: 4px;">FARMER QUERY (हिंदी में)
+            </div>
+            <div style="font-size: 18px; font-weight: 700; color: #1c1917; margin-bottom: 8px;">
+              "गेहूं की फसल में कल्ले फूटने के समय कौन सा खाद डालें?"
+            </div>
+            <div
+              style="font-size: 15px; color: #247b4c; line-height: 1.4; border-top: 1px dashed #e7e5e0; padding-top: 8px;">
+              <strong>AgriSense AI:</strong> कल्ले फूटते समय (Tillering stage) पहली सिंचाई के बाद 25-30 किग्रा यूरिया
+              प्रति एकड़ बुरकाव करें।
+            </div>
+          </div>
+
+          <div class="lang-badge-bar">
+            <div
+              style="background: #247b4c; color: white; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 14px;">
+              ✓ 100% English Supported
+            </div>
+            <div
+              style="background: #f59e0b; color: white; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 14px;">
+              ✓ 100% हिंदी स्थानीयकरण
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-panel" id="s7-browser">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+              <div class="browser-url">agrisense.ai/marketplace</div>
+            </div>
+            <img src="assets/screenshots/marketplace.png" alt="Farmer Marketplace" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+           SCENE 8: OUTRO & LIVE PRODUCTION DEPLOYMENT (45.0s - 50.0s)
+           ========================================== -->
+    <section id="scene-8" class="scene clip" data-start="45.0" data-duration="5.0">
+      <div class="outro-emblem font-display">🌾</div>
+      <h2 class="outro-title font-display">AgriSense AI</h2>
+      <p class="outro-sub font-display">Agricultural Intelligence For Every Season</p>
+
+      <div class="credentials-grid">
+        <div class="cred-card">
+          <div class="cred-num font-display">22</div>
+          <div class="cred-lbl">Indian Crop Classes</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-num font-display">98.68%</div>
+          <div class="cred-lbl">Tuned SVM Accuracy</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-num font-display">8 APMC</div>
+          <div class="cred-lbl">Live Mandi Feeds</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-num font-display">EN / HI</div>
+          <div class="cred-lbl">Bilingual Localization</div>
+        </div>
+      </div>
+
+      <div class="live-url-pill font-display">
+        <span>🚀</span> agri-sense-ai-nine.vercel.app
+      </div>
+    </section>
+  </div>
+
+  <!-- GSAP Master Animation Script -->
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    window.__timelines = window.__timelines || {};
+    window.__timelines["main"] = tl;
+
+    // Global Nav Subsystem Label Updater
+    const navStepNum = document.getElementById("nav-step-num");
+    const navStepTitle = document.getElementById("nav-step-title");
+
+    // Scene 1: Hook (0s - 5.5s)
+    tl.set("#scene-1", { opacity: 1 }, 0);
+    tl.fromTo("#s1-logo", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.2);
+    tl.fromTo("#s1-line-1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.6);
+    tl.fromTo("#s1-line-2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 1.3);
+    tl.fromTo("#s1-line-3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 2.0);
+    tl.fromTo("#s1-tagline", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 2.6);
+    tl.fromTo("#s1-seasons", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.5)" }, 3.2);
+    tl.to("#scene-1", { opacity: 0, scale: 0.98, duration: 0.5, ease: "power2.in" }, 5.0);
+
+    // Show Global Nav at 5.5s
+    tl.to("#global-nav", { opacity: 1, duration: 0.4 }, 5.4);
+
+    // Scene 2: Dashboard (5.5s - 12.0s)
+    tl.set("#scene-2", { opacity: 1 }, 5.5);
+    tl.call(() => {
+      navStepNum.textContent = "MODULE 01";
+      navStepTitle.textContent = "Unified Farmer Dashboard";
+    }, null, 5.5);
+    tl.fromTo("#s2-browser", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 5.6);
+    tl.fromTo("#s2-info", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 5.8);
+    tl.fromTo(".s2-card", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15, ease: "power2.out" }, 6.4);
+    tl.to("#scene-2", { opacity: 0, duration: 0.4 }, 11.6);
+
+    // Scene 3: ML Crop Recommender (12.0s - 18.5s)
+    tl.set("#scene-3", { opacity: 1 }, 12.0);
+    tl.call(() => {
+      navStepNum.textContent = "MODULE 02";
+      navStepTitle.textContent = "ML Crop Recommendation Engine (SVM)";
+    }, null, 12.0);
+    tl.fromTo("#s3-info", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 12.1);
+    tl.fromTo("#s3-browser", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 12.3);
+    tl.fromTo(".matrix-item", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.4, stagger: 0.08, ease: "back.out(1.2)" }, 12.8);
+    tl.fromTo("#s3-pred-card", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 13.8);
+    tl.fromTo("#s3-bar-fill", { width: "0%" }, { width: "98%", duration: 1.2, ease: "power2.out" }, 14.4);
+    tl.to("#scene-3", { opacity: 0, duration: 0.4 }, 18.1);
+
+    // Scene 4: Fertilizer Advisor (18.5s - 25.0s)
+    tl.set("#scene-4", { opacity: 1 }, 18.5);
+    tl.call(() => {
+      navStepNum.textContent = "MODULE 03";
+      navStepTitle.textContent = "Two-Stage Partitioned Fertilizer Advisor";
+    }, null, 18.5);
+    tl.fromTo("#s4-browser", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 18.6);
+    tl.fromTo("#s4-info", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 18.8);
+    tl.fromTo(".mode-card", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.25, ease: "power2.out" }, 19.4);
+    tl.to("#scene-4", { opacity: 0, duration: 0.4 }, 24.6);
+
+    // Scene 5: Mandi & Sell/Hold (25.0s - 32.0s)
+    tl.set("#scene-5", { opacity: 1 }, 25.0);
+    tl.call(() => {
+      navStepNum.textContent = "MODULE 04";
+      navStepTitle.textContent = "Mandi Intelligence & Sell/Hold Engine";
+    }, null, 25.0);
+    tl.fromTo("#s5-info", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 25.1);
+    tl.fromTo("#s5-browser", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 25.3);
+    tl.fromTo("#s5-verdict", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.7, ease: "back.out(1.3)" }, 26.0);
+    tl.to("#scene-5", { opacity: 0, duration: 0.4 }, 31.6);
+
+    // Scene 6: Health & Scouting (32.0s - 38.5s)
+    tl.set("#scene-6", { opacity: 1 }, 32.0);
+    tl.call(() => {
+      navStepNum.textContent = "MODULE 05";
+      navStepTitle.textContent = "Crop Health Diagnostics & Field Scouting";
+    }, null, 32.0);
+    tl.fromTo("#s6-browser", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 32.1);
+    tl.fromTo("#s6-info", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 32.3);
+    tl.to("#scene-6", { opacity: 0, duration: 0.4 }, 38.1);
+
+    // Scene 7: Marketplace & Bilingual Assistant (38.5s - 45.0s)
+    tl.set("#scene-7", { opacity: 1 }, 38.5);
+    tl.call(() => {
+      navStepNum.textContent = "MODULE 06";
+      navStepTitle.textContent = "Farmer Marketplace & Bilingual Assistant";
+    }, null, 38.5);
+    tl.fromTo("#s7-info", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 38.6);
+    tl.fromTo("#s7-browser", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 38.8);
+    tl.to("#scene-7", { opacity: 0, duration: 0.4 }, 44.6);
+
+    // Hide Global Nav before Outro
+    tl.to("#global-nav", { opacity: 0, duration: 0.3 }, 44.6);
+
+    // Scene 8: Outro & Deployment (45.0s - 50.0s)
+    tl.set("#scene-8", { opacity: 1 }, 45.0);
+    tl.fromTo(".outro-emblem", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.5)" }, 45.1);
+    tl.fromTo(".outro-title", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 45.4);
+    tl.fromTo(".outro-sub", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 45.7);
+    tl.fromTo(".cred-card", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" }, 46.0);
+    tl.fromTo(".live-url-pill", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, 46.8);
+
+    // Seek to 0 initially
+    tl.seek(0);
+  </script>
+</body>
+
+</html>
