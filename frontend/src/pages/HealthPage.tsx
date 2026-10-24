@@ -438,15 +438,17 @@ function InfoCard({
   const { t } = useI18n();
   return (
     <li className="card p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <button type="button" className="flex min-w-0 flex-1 items-center gap-3 text-left" onClick={onToggle} aria-expanded={expanded}>
-          <span className="font-display text-lg font-bold">{name}</span>
-          <span aria-hidden className="text-soil-400">{expanded ? "▲" : "▼"}</span>
+      <div className="health-info-header">
+        <button type="button" className="health-info-title" onClick={onToggle} aria-expanded={expanded}>
+          <span className="min-w-0 break-words font-display text-lg font-bold">{name}</span>
+          <span aria-hidden className="shrink-0 pt-1 text-soil-400">{expanded ? "▲" : "▼"}</span>
         </button>
-        <EducationalBadge />
-        <button type="button" className="btn-secondary !py-1.5 !text-xs" onClick={onLog}>
-          {t("health.logRecord")}
-        </button>
+        <div className="health-info-actions">
+          <EducationalBadge className="shrink-0 whitespace-nowrap" />
+          <button type="button" className="btn-secondary shrink-0 !py-1.5 !text-xs" onClick={onLog}>
+            {t("health.logRecord")}
+          </button>
+        </div>
       </div>
 
       {expanded && (
