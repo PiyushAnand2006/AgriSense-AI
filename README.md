@@ -496,3 +496,9 @@ npm run build
 
 - **Educational Guidance**: Agricultural content (diseases, pests, treatments, fertilizer guidance) is educational information. Always consult local Krishi Vigyan Kendras (KVK) or certified agricultural extension officers before taking action.
 - **Decision Support**: The sell or hold engine provides mathematical decision-support rules based on recorded mandi trends and storage costs. It does not constitute financial advice.
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
