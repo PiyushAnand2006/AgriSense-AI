@@ -8,7 +8,7 @@ are plain observations.
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, Float, ForeignKey, Index, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -22,6 +22,11 @@ class HealthRecord(Base):
     """A farmer-logged disease/pest observation for one crop."""
 
     __tablename__ = "health_records"
+    # List screens filter user_id + crop_id and sort newest first; the single
+    # btree is bidirectional so it also serves `ORDER BY created_at DESC`.
+    __table_args__ = (
+        Index("ix_health_records_user_crop_date", "user_id", "crop_id", "created_at"),
+    )
 
     id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_uuid)
     user_id: Mapped[str] = mapped_column(

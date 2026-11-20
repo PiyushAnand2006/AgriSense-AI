@@ -38,6 +38,19 @@ def get_db() -> Generator[Session, None, None]:
         db.close()
 
 
+def _ensure_indexes() -> None:
+    """Re-create any metadata indexes missing on the current database.
+
+    create_all() never alters tables that already exist, so indexes added to
+    the models after first launch would never reach a database initialised
+    earlier (e.g. the production Supabase Postgres). checkfirst=True keeps
+    this idempotent on every boot.
+    """
+    for table in Base.metadata.sorted_tables:
+        for index in table.indexes:
+            index.create(bind=engine, checkfirst=True)
+
+
 def init_db() -> None:
     """Create tables and seed reference data (idempotent)."""
     # Import models so they are registered on the Base metadata.
@@ -45,5 +58,6 @@ def init_db() -> None:
     from app.db.seed import seed
 
     Base.metadata.create_all(bind=engine)
+    _ensure_indexes()
     with SessionLocal() as db:
         seed(db)
