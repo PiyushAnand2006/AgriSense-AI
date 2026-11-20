@@ -31,6 +31,16 @@ class Settings(BaseSettings):
     upload_dir: str = "uploads"
     max_upload_mb: int = 8
 
+    # --- Supabase Storage (optional; local uploads dir is the fallback) ------
+    # Render's disk is ephemeral: files written locally vanish on every
+    # deploy/restart. When SUPABASE_URL and SUPABASE_STORAGE_KEY are set,
+    # images are uploaded to a public Supabase Storage bucket and the record
+    # stores an absolute public URL. Use the service-role key here — it is
+    # server-side only and must never be exposed to the frontend.
+    supabase_url: str = ""
+    supabase_storage_key: str = ""
+    supabase_storage_bucket: str = "crop-health"
+
     # --- External API integrations (all optional; DB fallbacks apply) -------
 
     # Open-Meteo-compatible forecast endpoint (no key needed by default).
@@ -67,6 +77,10 @@ class Settings(BaseSettings):
         path = BACKEND_DIR / self.upload_dir
         path.mkdir(parents=True, exist_ok=True)
         return path
+
+    @property
+    def is_supabase_storage_configured(self) -> bool:
+        return bool(self.supabase_url and self.supabase_storage_key)
 
     @property
     def is_sqlite(self) -> bool:
