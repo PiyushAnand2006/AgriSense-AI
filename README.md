@@ -499,6 +499,17 @@ npm run build
 
 ---
 
+## 📈 Scaling & Deployment Notes
+
+- **Stateless backend**: uploaded images go to Supabase Storage when `SUPABASE_URL` + `SUPABASE_STORAGE_KEY` (service role, server-side only) are set — the Render filesystem is ephemeral and would wipe local files on every deploy. Without those vars the backend falls back to the local `uploads/` dir (dev/tests). Create a **public** bucket (default name: `crop-health`) in the Supabase dashboard.
+- **Database access**: production connects through Supabase's Supavisor pooler. Port **5432** = session mode (current setup, fits a single web instance); port **6543** = transaction mode — required if you scale to multiple instances, and then SQLAlchemy must run with prepared statements disabled (`execution_options(prepared_statement_cache_size=0)` or `connect_args` on the engine). `pool_pre_ping=True` is already enabled.
+- **Hot-path indexes** are applied idempotently at startup (`init_db` → `_ensure_indexes`): composite indexes on `health_records (user_id, crop_id, created_at)` and `notifications (user_id, is_read, created_at)`; `market_prices` is covered by the `uq_price_per_day` unique constraint. No Alembic — safe to re-run on every boot.
+- **In-process caches**: the market price board's whole-table scan (`latest_per_combo`) is cached per calendar day; weather/mandi/reference data uses the existing TTL cache (`app/core/cache.py`). Never cache user-specific data under a shared key.
+- **Load testing**: `k6 run backend/tests/load/k6_smoke.js` against a **local** server only — never against the live deployment (see script header for usage).
+- **What breaks first at 10× traffic**: (1) Supabase free-tier pause/connection limits, (2) ephemeral uploads if Storage isn't configured, (3) Render free plan RAM (512 MB) with the sklearn/xgboost models loaded.
+
+---
+
 ## 📄 License
 
 Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
