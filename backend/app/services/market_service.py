@@ -98,8 +98,18 @@ def get_current_price(db: Session, crop_id: str, market_id: str) -> MarketPrice 
     return db.scalars(stmt).first()
 
 
-def latest_per_combo(db: Session) -> list[tuple[MarketPrice, Crop, Market]]:
-    """Latest price row for every crop x market combination."""
+# --- Latest price per crop x market (daily in-process cache) ---------------------
+
+# latest_per_combo() scans the whole market_prices table and de-duplicates it
+# in Python, but its result is identical for every user and only changes when
+# the daily seed rolls prices over (calendar date) or the process restarts, so
+# the result is cached in-process, keyed by calendar date. Never cache
+# user-specific data here. Detached ORM instances are fine to hand out because
+# callers only read loaded column attributes.
+_latest_combo_cache: dict[str, list[tuple[MarketPrice, Crop, Market]]] = {}
+
+
+def _compute_latest_per_combo(db: Session) -> list[tuple[MarketPrice, Crop, Market]]:
     stmt = (
         select(MarketPrice, Crop, Market)
         .join(Crop, Crop.id == MarketPrice.crop_id)
@@ -115,6 +125,23 @@ def latest_per_combo(db: Session) -> list[tuple[MarketPrice, Crop, Market]]:
         seen.add(key)
         results.append((price, crop, market))
     return results
+
+
+def latest_per_combo(db: Session) -> list[tuple[MarketPrice, Crop, Market]]:
+    """Latest price row for every crop x market combination (cached per day)."""
+    today = date.today().isoformat()
+    cached = _latest_combo_cache.get(today)
+    if cached is None:
+        cached = _compute_latest_per_combo(db)
+        _latest_combo_cache.clear()  # drop stale dates
+        _latest_combo_cache[today] = cached
+    # Hand out a copy so callers cannot mutate the cached list.
+    return list(cached)
+
+
+def clear_latest_combo_cache() -> None:
+    """Drop the cached combos (used by tests and future invalidation hooks)."""
+    _latest_combo_cache.clear()
 
 
 # --- Trend computation (rule-based, not a forecast) ------------------------------

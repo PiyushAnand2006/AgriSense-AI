@@ -71,3 +71,35 @@ def test_market_trend_is_rule_computed(client):
 def test_unknown_crop_404(client):
     assert client.get(f"{API}/prices/dragonfruit").status_code == 404
     assert client.get(f"{API}/trends/dragonfruit").status_code == 404
+
+
+def test_latest_per_combo_is_cached_per_day(client, monkeypatch):
+    """The whole-table scan runs once per calendar date; later calls reuse it."""
+    from app.db.session import SessionLocal
+    from app.services import market_service
+
+    calls = {"n": 0}
+    original = market_service._compute_latest_per_combo
+
+    def counting(db):
+        calls["n"] += 1
+        return original(db)
+
+    monkeypatch.setattr(market_service, "_compute_latest_per_combo", counting)
+    market_service.clear_latest_combo_cache()
+
+    with SessionLocal() as db:
+        first = market_service.latest_per_combo(db)
+    with SessionLocal() as db:
+        second = market_service.latest_per_combo(db)
+
+    assert calls["n"] == 1
+    assert [p.id for p, _, _ in first] == [p.id for p, _, _ in second]
+
+    # The cached list is handed out as a copy — mutating it must not
+    # poison the cache for the next caller.
+    first.append("poison")
+    with SessionLocal() as db:
+        third = market_service.latest_per_combo(db)
+    assert calls["n"] == 1
+    assert all(row != "poison" for row, _, _ in third)
