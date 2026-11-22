@@ -88,17 +88,16 @@ def get_history(db: Session, crop_id: str, market_id: str, days: int = 90) -> li
     return [r for r in rows if r.price_date.toordinal() >= start]
 
 
-def get_history_bulk(db: Session, days: int = 31) -> dict[tuple[str, str], list[MarketPrice]]:
-    """Fetch the trailing `days` of prices for every crop x market combo in
-    ONE query, grouped oldest-first per combo (same ordering contract as
-    get_history()).
+# Daily in-process cache for the bulk history fetch — same criteria as
+# latest_per_combo: identical for every user, changes only at the daily seed
+# rollover, so it is keyed by calendar date (+ window length).
+_history_bulk_cache: dict[tuple[str, int], dict[tuple[str, str], list[MarketPrice]]] = {}
 
-    The price board used to call get_history() once per combo — an N+1 pattern
-    that cost one DB round trip (~150ms across regions) per combo, ~26s per
-    page load. One indexed range query replaces them all; the
-    uq_price_per_day index leads with (crop_id, market_id) so the scan is
-    efficient.
-    """
+
+def _compute_history_bulk(db: Session, days: int) -> dict[tuple[str, str], list[MarketPrice]]:
+    """Trailing `days` of prices for every crop x market combo, one indexed
+    range query (uq_price_per_day leads with crop_id, market_id), grouped
+    oldest-first per combo — same ordering contract as get_history()."""
     start = date.today() - timedelta(days=days - 1)
     stmt = (
         select(MarketPrice)
@@ -109,6 +108,23 @@ def get_history_bulk(db: Session, days: int = 31) -> dict[tuple[str, str], list[
     for price in db.scalars(stmt):
         bulk.setdefault((price.crop_id, price.market_id), []).append(price)
     return bulk
+
+
+def get_history_bulk(db: Session, days: int = 31) -> dict[tuple[str, str], list[MarketPrice]]:
+    """Bulk history with the daily cache applied.
+
+    Replaces the price board's old per-combo get_history() loop — an N+1 that
+    cost one DB round trip (~150ms across regions) per combo, ~26s per page
+    load — with one indexed range query per day.
+    """
+    today = date.today().isoformat()
+    cached = _history_bulk_cache.get((today, days))
+    if cached is None:
+        cached = _compute_history_bulk(db, days)
+        _history_bulk_cache.clear()  # drop stale dates
+        _history_bulk_cache[(today, days)] = cached
+    # Shallow copy: callers cannot mutate the cached dict itself.
+    return dict(cached)
 
 
 def get_current_price(db: Session, crop_id: str, market_id: str) -> MarketPrice | None:
@@ -133,20 +149,22 @@ _latest_combo_cache: dict[str, list[tuple[MarketPrice, Crop, Market]]] = {}
 
 
 def _compute_latest_per_combo(db: Session) -> list[tuple[MarketPrice, Crop, Market]]:
-    stmt = (
-        select(MarketPrice, Crop, Market)
-        .join(Crop, Crop.id == MarketPrice.crop_id)
-        .join(Market, Market.id == MarketPrice.market_id)
-        .order_by(MarketPrice.price_date.desc())
-    )
-    seen: set[tuple[str, str]] = set()
+    """Newest price row for every crop x market combo.
+
+    Derived from today's rows via the bulk range query (the seed guarantees
+    every combo has a row for the current date after boot), so instead of a
+    whole-table scan + Python de-duplication we pay one single-day indexed
+    query plus two tiny catalog lookups.
+    """
+    today_rows = _compute_history_bulk(db, days=1)
+    crops = {crop.id: crop for crop in db.scalars(select(Crop))}
+    markets = {market.id: market for market in db.scalars(select(Market))}
     results: list[tuple[MarketPrice, Crop, Market]] = []
-    for price, crop, market in db.execute(stmt):
-        key = (crop.id, market.id)
-        if key in seen:
-            continue
-        seen.add(key)
-        results.append((price, crop, market))
+    for (crop_id, market_id), rows in today_rows.items():
+        crop = crops.get(crop_id)
+        market = markets.get(market_id)
+        if rows and crop is not None and market is not None:
+            results.append((rows[-1], crop, market))
     return results
 
 
@@ -165,6 +183,12 @@ def latest_per_combo(db: Session) -> list[tuple[MarketPrice, Crop, Market]]:
 def clear_latest_combo_cache() -> None:
     """Drop the cached combos (used by tests and future invalidation hooks)."""
     _latest_combo_cache.clear()
+
+
+def clear_market_caches() -> None:
+    """Drop both daily market caches (tests and future invalidation hooks)."""
+    _latest_combo_cache.clear()
+    _history_bulk_cache.clear()
 
 
 # --- Trend computation (rule-based, not a forecast) ------------------------------

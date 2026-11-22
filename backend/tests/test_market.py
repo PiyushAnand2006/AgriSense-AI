@@ -122,3 +122,35 @@ def test_latest_per_combo_is_cached_per_day(client, monkeypatch):
         third = market_service.latest_per_combo(db)
     assert calls["n"] == 1
     assert all(row != "poison" for row, _, _ in third)
+
+
+def test_history_bulk_is_cached_per_day(client, monkeypatch):
+    """The bulk history fetch runs once per calendar date; later calls reuse it."""
+    from app.db.session import SessionLocal
+    from app.services import market_service
+
+    calls = {"n": 0}
+    original = market_service._compute_history_bulk
+
+    def counting(db, days):
+        calls["n"] += 1
+        return original(db, days)
+
+    monkeypatch.setattr(market_service, "_compute_history_bulk", counting)
+    market_service.clear_market_caches()
+
+    with SessionLocal() as db:
+        first = market_service.get_history_bulk(db, days=31)
+    with SessionLocal() as db:
+        second = market_service.get_history_bulk(db, days=31)
+
+    assert calls["n"] == 1
+    assert first.keys() == second.keys()
+
+    # The cached dict is handed out as a shallow copy — mutating it must not
+    # poison the cache for the next caller.
+    first["poison-key"] = []
+    with SessionLocal() as db:
+        third = market_service.get_history_bulk(db, days=31)
+    assert calls["n"] == 1
+    assert "poison-key" not in third
