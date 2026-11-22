@@ -301,6 +301,8 @@
     "contact": "Contact farmer",
     "myListings": "My listings",
     "empty": "No listings match your filters.",
+    "searchPlaceholder": "Search crop, location or farmer…",
+    "filterCrop": "Filter by crop",
     "listingCreated": "Listing published",
     "sold": "Mark sold"
   },

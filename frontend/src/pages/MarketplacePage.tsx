@@ -127,10 +127,15 @@ export default function MarketplacePage() {
 
       {/* Filters */}
       <div className="card flex flex-wrap items-end gap-3 p-4">
-        <SearchBar value={search} onChange={setSearch} placeholder={t("common.search")} label={t("common.search")} />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder={t("marketplace.searchPlaceholder")}
+          label={t("marketplace.searchPlaceholder")}
+        />
         <div className="min-w-36">
           <label htmlFor="mp-crop" className="label">
-            {t("common.selectCrop")}
+            {t("marketplace.filterCrop")}
           </label>
           <select
             id="mp-crop"
