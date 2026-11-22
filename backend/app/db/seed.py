@@ -188,6 +188,29 @@ MARKETS: list[dict] = [
     {"id": "lucknow-mandi", "name": "Lucknow Mandi", "city": "Lucknow", "state": "Uttar Pradesh"},
     {"id": "indore-mandi", "name": "Indore Mandi", "city": "Indore", "state": "Madhya Pradesh"},
     {"id": "ahmedabad-mandi", "name": "Ahmedabad Market", "city": "Ahmedabad", "state": "Gujarat"},
+    # Northern grain belt
+    {"id": "ludhiana-grain", "name": "Ludhiana Grain Market", "city": "Ludhiana", "state": "Punjab"},
+    {"id": "amritsar-grain", "name": "Amritsar Grain Market", "city": "Amritsar", "state": "Punjab"},
+    {"id": "hisar-grain", "name": "Hisar Grain Market", "city": "Hisar", "state": "Haryana"},
+    {"id": "karnal-grain", "name": "Karnal Grain Market", "city": "Karnal", "state": "Haryana"},
+    {"id": "dehradun-mandi", "name": "Dehradun Mandi", "city": "Dehradun", "state": "Uttarakhand"},
+    {"id": "shimla-mandi", "name": "Shimla Mandi", "city": "Shimla", "state": "Himachal Pradesh"},
+    {"id": "srinagar-mandi", "name": "Srinagar Mandi", "city": "Srinagar", "state": "Jammu & Kashmir"},
+    # East & Northeast
+    {"id": "patna-grain", "name": "Patna Grain Market", "city": "Patna", "state": "Bihar"},
+    {"id": "ranchi-grain", "name": "Ranchi Grain Market", "city": "Ranchi", "state": "Jharkhand"},
+    {"id": "kolkata-yard", "name": "Kolkata Market Yard", "city": "Kolkata", "state": "West Bengal"},
+    {"id": "guwahati-grain", "name": "Guwahati Grain Market", "city": "Guwahati", "state": "Assam"},
+    {"id": "bhubaneswar-mandi", "name": "Bhubaneswar Mandi", "city": "Bhubaneswar", "state": "Odisha"},
+    # Central & West
+    {"id": "raipur-grain", "name": "Raipur Grain Market", "city": "Raipur", "state": "Chhattisgarh"},
+    {"id": "panaji-market", "name": "Panaji Market", "city": "Panaji", "state": "Goa"},
+    # South
+    {"id": "bengaluru-kr", "name": "Bengaluru KR Market", "city": "Bengaluru", "state": "Karnataka"},
+    {"id": "hyderabad-bowenpally", "name": "Hyderabad Bowenpally Market", "city": "Hyderabad", "state": "Telangana"},
+    {"id": "vijayawada-mandi", "name": "Vijayawada Mandi", "city": "Vijayawada", "state": "Andhra Pradesh"},
+    {"id": "chennai-koyambedu", "name": "Chennai Koyambedu Market", "city": "Chennai", "state": "Tamil Nadu"},
+    {"id": "kochi-market", "name": "Kochi Ernakulam Market", "city": "Kochi", "state": "Kerala"},
 ]
 
 BASE_PRICES = {
@@ -232,13 +255,28 @@ def _seed_prices(db: Session, crop_ids: list[str], market_ids: list[str]) -> Non
     today = date.today()
     start = today - timedelta(days=PRICE_HISTORY_DAYS - 1)
 
+    # Fetch the newest seeded date of every crop x market combo in ONE grouped
+    # query — a per-combo max() here meant one DB round trip per combo on
+    # every boot (~180 combos today, more as markets grow).
+    latest_by_combo: dict[tuple[str, str], date] = {
+        (crop_id, market_id): latest
+        for crop_id, market_id, latest in db.execute(
+            select(
+                MarketPrice.crop_id,
+                MarketPrice.market_id,
+                func.max(MarketPrice.price_date),
+            )
+            .where(
+                MarketPrice.crop_id.in_(crop_ids),
+                MarketPrice.market_id.in_(market_ids),
+            )
+            .group_by(MarketPrice.crop_id, MarketPrice.market_id)
+        )
+    }
+
     for crop_id in crop_ids:
         for market_id in market_ids:
-            latest = db.scalar(
-                select(func.max(MarketPrice.price_date)).where(
-                    MarketPrice.crop_id == crop_id, MarketPrice.market_id == market_id
-                )
-            )
+            latest = latest_by_combo.get((crop_id, market_id))
             first_day = max(start, (latest + timedelta(days=1)) if latest else start)
             if first_day > today:
                 continue

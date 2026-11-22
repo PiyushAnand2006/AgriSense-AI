@@ -5,8 +5,10 @@ API = "/api/v1/market"
 
 def test_markets_catalog(client):
     markets = client.get(f"{API}/markets").json()
-    assert len(markets) >= 8
+    assert len(markets) >= 25
     assert {"id", "name", "city", "state"} <= set(markets[0])
+    # National-ish demo coverage: mandis across many states.
+    assert len({m["state"] for m in markets}) >= 20
 
 
 def test_price_board_normalized_structure(client):
