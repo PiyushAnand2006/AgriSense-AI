@@ -27,6 +27,7 @@ from app.services.market_service import (
     compute_trends,
     get_current_price,
     get_history,
+    get_history_bulk,
     latest_per_combo,
     list_markets_cached,
     prices_source,
@@ -65,6 +66,9 @@ async def price_board(
 ):
     """Latest normalized price per crop x market with change + trends."""
     source = await prices_source()
+    # One range query for every combo's trailing 31 days — the per-combo
+    # get_history() loop here cost one DB round trip per combo (~26s/page).
+    history_map = get_history_bulk(db, days=31)
     summaries: list[PriceSummary] = []
     for price, crop, market in latest_per_combo(db):
         if cropId and crop.id != cropId:
@@ -79,7 +83,7 @@ async def price_board(
                 needle in s for s in (crop.name.lower(), market.name.lower(), market.city.lower())
             ):
                 continue
-        history = get_history(db, crop.id, market.id, days=31)
+        history = history_map.get((crop.id, market.id), [])
         previous = history[-2].modal_price if len(history) >= 2 else price.modal_price
         change = round(price.modal_price - previous, 1)
         change_pct = round((change / previous) * 100, 2) if previous else 0.0

@@ -13,7 +13,7 @@ minPrice, maxPrice, modalPrice, unit, source) regardless of the origin.
 """
 
 import logging
-from datetime import date
+from datetime import date, timedelta
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -86,6 +86,29 @@ def get_history(db: Session, crop_id: str, market_id: str, days: int = 90) -> li
     rows.reverse()
     # Keep only rows within the window (seeded data always ends today).
     return [r for r in rows if r.price_date.toordinal() >= start]
+
+
+def get_history_bulk(db: Session, days: int = 31) -> dict[tuple[str, str], list[MarketPrice]]:
+    """Fetch the trailing `days` of prices for every crop x market combo in
+    ONE query, grouped oldest-first per combo (same ordering contract as
+    get_history()).
+
+    The price board used to call get_history() once per combo — an N+1 pattern
+    that cost one DB round trip (~150ms across regions) per combo, ~26s per
+    page load. One indexed range query replaces them all; the
+    uq_price_per_day index leads with (crop_id, market_id) so the scan is
+    efficient.
+    """
+    start = date.today() - timedelta(days=days - 1)
+    stmt = (
+        select(MarketPrice)
+        .where(MarketPrice.price_date >= start)
+        .order_by(MarketPrice.crop_id, MarketPrice.market_id, MarketPrice.price_date)
+    )
+    bulk: dict[tuple[str, str], list[MarketPrice]] = {}
+    for price in db.scalars(stmt):
+        bulk.setdefault((price.crop_id, price.market_id), []).append(price)
+    return bulk
 
 
 def get_current_price(db: Session, crop_id: str, market_id: str) -> MarketPrice | None:

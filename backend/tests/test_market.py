@@ -53,6 +53,23 @@ def test_price_history(client):
     assert response["trends"]["trend7d"] != 0 or response["trends"]["trend30d"] != 0
 
 
+def test_history_bulk_matches_single_combo_history(client):
+    """get_history_bulk must return exactly what per-combo get_history would,
+    so the price board's one-query optimization changes nothing user-visible."""
+    from app.db.session import SessionLocal
+    from app.services.market_service import get_history, get_history_bulk
+
+    with SessionLocal() as db:
+        bulk = get_history_bulk(db, days=31)
+        assert bulk, "seeded prices must exist"
+        for (crop_id, market_id), bulk_rows in list(bulk.items())[:5]:
+            single = get_history(db, crop_id, market_id, days=31)
+            assert [p.id for p in bulk_rows] == [p.id for p in single]
+            # Ordering contract: oldest -> newest, matching get_history().
+            dates = [p.price_date for p in bulk_rows]
+            assert dates == sorted(dates)
+
+
 def test_market_trend_is_rule_computed(client):
     body = client.get(f"{API}/trends/wheat", params={"days": 30}).json()
     assert body["direction"] in ("UP", "DOWN", "FLAT")
